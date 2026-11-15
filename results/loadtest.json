@@ -1,0 +1,1316 @@
+{
+ "summary": {
+  "agents_concurrent": 50,
+  "rounds_per_agent": 3,
+  "total_calls": 150,
+  "errors": 126,
+  "error_strings": [
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_edge_metadata exceeded query timeout after 30392 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_edge_sources exceeded query timeout after 30018 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_edge_sources exceeded query timeout after 30100 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_metadata_hydration exceeded query timeout after 30000 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_relationship_edge_records exceeded query timeout after 30123 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_relationship_edge_records exceeded query timeout after 30308 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30000 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30006 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30009 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30025 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30032 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30088 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30089 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30093 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30114 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30186 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30192 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30194 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30197 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30199 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30202 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30206 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30211 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30277 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30285 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30286 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30291 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30292 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30293 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30317 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30399 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30421 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_write_back exceeded query timeout after 30000 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_write_back exceeded query timeout after 30296 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30000 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30002 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30012 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30189 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30191 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30214 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30268 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30278 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30319 ms; limit is 30000 ms\"}}",
+   "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30411 ms; limit is 30000 ms\"}}"
+  ],
+  "wall_time_s": 246.42,
+  "throughput_calls_per_s": 0.609,
+  "latency_ms": {
+   "mean": 70682.1,
+   "p50": 69587.9,
+   "p95": 104299.4,
+   "max": 131818.8
+  },
+  "weights_reset_before": 60,
+  "weights_reset_after": 60,
+  "note": "50 threads on a shared VM (1.5 vCPU) against a single HydraDB node; find_tools issues ~7 HTTP queries per call. Numbers are as measured, no warm-up exclusion."
+ },
+ "calls": [
+  {
+   "agent": 0,
+   "round": 1,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 69114.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30192 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 0,
+   "round": 2,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 45802.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 0,
+   "round": 3,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 71296.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 1,
+   "round": 1,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 62923.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 1,
+   "round": 2,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 76879.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30025 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 1,
+   "round": 3,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 40999.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30114 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 2,
+   "round": 1,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 72022.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 2,
+   "round": 2,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 66108.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 2,
+   "round": 3,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 108028.6,
+   "chain_len": 4,
+   "tokens_loaded": 330,
+   "method": "resolver"
+  },
+  {
+   "agent": 3,
+   "round": 1,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 64803.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30421 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 3,
+   "round": 2,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 66610.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 3,
+   "round": 3,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 114712.2,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "resolver"
+  },
+  {
+   "agent": 4,
+   "round": 1,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 58731.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30286 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 4,
+   "round": 2,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 64467.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30006 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 4,
+   "round": 3,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 71829.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30202 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 5,
+   "round": 1,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 54410.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30278 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 5,
+   "round": 2,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 75129.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_write_back exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 5,
+   "round": 3,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 100184.8,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 6,
+   "round": 1,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 62909.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 6,
+   "round": 2,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 65017.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 6,
+   "round": 3,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 71496.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 7,
+   "round": 1,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 58095.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 7,
+   "round": 2,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 71440.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 7,
+   "round": 3,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 104975.7,
+   "chain_len": 4,
+   "tokens_loaded": 338,
+   "method": "mspaths"
+  },
+  {
+   "agent": 8,
+   "round": 1,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 69719.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 8,
+   "round": 2,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 40588.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 8,
+   "round": 3,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 70430.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30093 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 9,
+   "round": 1,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 60295.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30012 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 9,
+   "round": 2,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 69447.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 9,
+   "round": 3,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 103368.6,
+   "chain_len": 4,
+   "tokens_loaded": 328,
+   "method": "mspaths"
+  },
+  {
+   "agent": 10,
+   "round": 1,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 69091.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_relationship_edge_records exceeded query timeout after 30123 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 10,
+   "round": 2,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 67518.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 10,
+   "round": 3,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 43805.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_write_back exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 11,
+   "round": 1,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 65619.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 11,
+   "round": 2,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 74181.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_edge_sources exceeded query timeout after 30100 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 11,
+   "round": 3,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 99925.8,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 12,
+   "round": 1,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 44117.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 12,
+   "round": 2,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 72299.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 12,
+   "round": 3,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 44605.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 13,
+   "round": 1,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 69706.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_relationship_edge_records exceeded query timeout after 30308 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 13,
+   "round": 2,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 66792.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30197 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 13,
+   "round": 3,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 100301.4,
+   "chain_len": 2,
+   "tokens_loaded": 172,
+   "method": "mspaths"
+  },
+  {
+   "agent": 14,
+   "round": 1,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 69504.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 14,
+   "round": 2,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 67108.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30411 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 14,
+   "round": 3,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 40490.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 15,
+   "round": 1,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 66592.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30032 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 15,
+   "round": 2,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 42901.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 15,
+   "round": 3,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 131818.8,
+   "chain_len": 4,
+   "tokens_loaded": 340,
+   "method": "resolver"
+  },
+  {
+   "agent": 16,
+   "round": 1,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 62414.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 16,
+   "round": 2,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 66279.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 16,
+   "round": 3,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 73714.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 17,
+   "round": 1,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 75121.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30319 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 17,
+   "round": 2,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 78790.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 17,
+   "round": 3,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 83391.6,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 18,
+   "round": 1,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 68204.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_edge_metadata exceeded query timeout after 30392 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 18,
+   "round": 2,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 64891.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 18,
+   "round": 3,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 107395.9,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 19,
+   "round": 1,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 44298.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 19,
+   "round": 2,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 68479.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 19,
+   "round": 3,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 45623.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 20,
+   "round": 1,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 73892.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30317 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 20,
+   "round": 2,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 67999.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30197 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 20,
+   "round": 3,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 104488.6,
+   "chain_len": 6,
+   "tokens_loaded": 494,
+   "method": "resolver"
+  },
+  {
+   "agent": 21,
+   "round": 1,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 69587.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 21,
+   "round": 2,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 63080.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 21,
+   "round": 3,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 69915.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 22,
+   "round": 1,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 67379.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30277 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 22,
+   "round": 2,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 74018.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 22,
+   "round": 3,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 42886.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 23,
+   "round": 1,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 67184.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 23,
+   "round": 2,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 74305.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 23,
+   "round": 3,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 104299.4,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "resolver"
+  },
+  {
+   "agent": 24,
+   "round": 1,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 44116.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30186 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 24,
+   "round": 2,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 73616.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 24,
+   "round": 3,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 74781.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 25,
+   "round": 1,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 73822.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 25,
+   "round": 2,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 69680.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 25,
+   "round": 3,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 88317.0,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 26,
+   "round": 1,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 97521.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30214 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 26,
+   "round": 2,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 76988.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 26,
+   "round": 3,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 71398.2,
+   "chain_len": 3,
+   "tokens_loaded": 258,
+   "method": "mspaths"
+  },
+  {
+   "agent": 27,
+   "round": 1,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 45008.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 27,
+   "round": 2,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 42182.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 27,
+   "round": 3,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 67704.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 28,
+   "round": 1,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 70709.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 28,
+   "round": 2,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 40691.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_metadata_hydration exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 28,
+   "round": 3,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 68405.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 29,
+   "round": 1,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 73122.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30399 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 29,
+   "round": 2,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 68492.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 29,
+   "round": 3,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 96885.5,
+   "chain_len": 4,
+   "tokens_loaded": 328,
+   "method": "mspaths"
+  },
+  {
+   "agent": 30,
+   "round": 1,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 67319.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 30,
+   "round": 2,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 64482.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 30,
+   "round": 3,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 71119.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 31,
+   "round": 1,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 62303.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 31,
+   "round": 2,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 68205.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 31,
+   "round": 3,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 100278.6,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 32,
+   "round": 1,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 72723.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30002 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 32,
+   "round": 2,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 73376.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30292 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 32,
+   "round": 3,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 94115.3,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 33,
+   "round": 1,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 72095.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 33,
+   "round": 2,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 69689.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 33,
+   "round": 3,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 67708.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30206 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 34,
+   "round": 1,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 69492.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 34,
+   "round": 2,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 70716.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_metadata_hydration exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 34,
+   "round": 3,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 41206.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_write_back exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 35,
+   "round": 1,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 68800.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_edge_sources exceeded query timeout after 30018 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 35,
+   "round": 2,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 74073.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 35,
+   "round": 3,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 102828.2,
+   "chain_len": 4,
+   "tokens_loaded": 340,
+   "method": "resolver"
+  },
+  {
+   "agent": 36,
+   "round": 1,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 74808.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 36,
+   "round": 2,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 62495.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 36,
+   "round": 3,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 107371.8,
+   "chain_len": 5,
+   "tokens_loaded": 422,
+   "method": "resolver"
+  },
+  {
+   "agent": 37,
+   "round": 1,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 78076.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 37,
+   "round": 2,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 70616.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 37,
+   "round": 3,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 90605.0,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 38,
+   "round": 1,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 42299.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 38,
+   "round": 2,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 46616.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 38,
+   "round": 3,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 70097.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30268 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 39,
+   "round": 1,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 62434.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 39,
+   "round": 2,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 46371.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30088 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 39,
+   "round": 3,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 67317.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 40,
+   "round": 1,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 71313.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 40,
+   "round": 2,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 68382.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_write_back exceeded query timeout after 30296 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 40,
+   "round": 3,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 70828.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 41,
+   "round": 1,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 71720.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 41,
+   "round": 2,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 77673.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 41,
+   "round": 3,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 92831.9,
+   "chain_len": 2,
+   "tokens_loaded": 164,
+   "method": "mspaths"
+  },
+  {
+   "agent": 42,
+   "round": 1,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 66790.5,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 42,
+   "round": 2,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 69106.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 42,
+   "round": 3,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 66616.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 43,
+   "round": 1,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 42244.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30211 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 43,
+   "round": 2,
+   "task": "t11",
+   "role": "finance_agent",
+   "latency_ms": 51478.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 43,
+   "round": 3,
+   "task": "t12",
+   "role": "ops_agent",
+   "latency_ms": 47093.1,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 44,
+   "round": 1,
+   "task": "t13",
+   "role": "finance_admin",
+   "latency_ms": 74887.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30293 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 44,
+   "round": 2,
+   "task": "t14",
+   "role": "support_agent",
+   "latency_ms": 71119.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30291 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 44,
+   "round": 3,
+   "task": "t15",
+   "role": "support_agent",
+   "latency_ms": 70092.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30194 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 45,
+   "round": 1,
+   "task": "t16",
+   "role": "hr_agent",
+   "latency_ms": 68889.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30191 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 45,
+   "round": 2,
+   "task": "t17",
+   "role": "hr_agent",
+   "latency_ms": 67320.8,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30009 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 45,
+   "round": 3,
+   "task": "t18",
+   "role": "sales_agent",
+   "latency_ms": 63995.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30089 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 46,
+   "round": 1,
+   "task": "t19",
+   "role": "ops_agent",
+   "latency_ms": 71707.9,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 46,
+   "round": 2,
+   "task": "t20",
+   "role": "hr_agent",
+   "latency_ms": 72898.2,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 46,
+   "round": 3,
+   "task": "t01",
+   "role": "support_agent",
+   "latency_ms": 72084.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30199 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 47,
+   "round": 1,
+   "task": "t02",
+   "role": "support_agent",
+   "latency_ms": 63682.4,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 47,
+   "round": 2,
+   "task": "t03",
+   "role": "finance_agent",
+   "latency_ms": 76712.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 47,
+   "round": 3,
+   "task": "t04",
+   "role": "finance_admin",
+   "latency_ms": 96604.1,
+   "chain_len": 4,
+   "tokens_loaded": 338,
+   "method": "mspaths"
+  },
+  {
+   "agent": 48,
+   "round": 1,
+   "task": "t05",
+   "role": "support_agent",
+   "latency_ms": 70989.0,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"client_query_runtime exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 48,
+   "round": 2,
+   "task": "t06",
+   "role": "dev_agent",
+   "latency_ms": 66712.3,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_metadata_hydration exceeded query timeout after 30000 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 48,
+   "round": 3,
+   "task": "t07",
+   "role": "dev_admin",
+   "latency_ms": 100682.3,
+   "chain_len": 3,
+   "tokens_loaded": 246,
+   "method": "mspaths"
+  },
+  {
+   "agent": 49,
+   "round": 1,
+   "task": "t08",
+   "role": "dev_admin",
+   "latency_ms": 67396.6,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"query_out_neighbors_scan exceeded query timeout after 30189 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 49,
+   "round": 2,
+   "task": "t09",
+   "role": "ops_agent",
+   "latency_ms": 72194.7,
+   "error": "CypherError: HTTP 408: {\"error\":{\"code\":\"query_timeout\",\"message\":\"cypher_vertex_metadata exceeded query timeout after 30285 ms; limit is 30000 ms\"}}"
+  },
+  {
+   "agent": 49,
+   "round": 3,
+   "task": "t10",
+   "role": "ops_agent",
+   "latency_ms": 99302.2,
+   "chain_len": 4,
+   "tokens_loaded": 328,
+   "method": "mspaths"
+  }
+ ]
+}

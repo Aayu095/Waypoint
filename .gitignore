@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data/store/
+data/store.cache/
+data/store.run/
+docker/token.txt

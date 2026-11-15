@@ -1,0 +1,1685 @@
+{
+ "protocol": "reset weights; 4 sequential passes over the 20 tasks; per task take the top-ranked candidate chain (CO_USED_WITH weight desc, length asc, lexicographic), score exact-match, report_outcome(top, success)",
+ "ranking_note": "experiment ranking is (weight, length) per protocol; production find_tools ranks by (supplied-inputs, length). Top-chain supplied inputs are recorded per task.",
+ "weights_reset_edges": 32,
+ "pass_accuracies": [
+  0.4,
+  0.35,
+  0.35,
+  0.35
+ ],
+ "tasks_with_competing_chains_ever": [
+  "t01",
+  "t02",
+  "t03",
+  "t04",
+  "t05",
+  "t06",
+  "t07",
+  "t08",
+  "t09",
+  "t10",
+  "t11",
+  "t12",
+  "t13",
+  "t14",
+  "t15",
+  "t16",
+  "t17",
+  "t18",
+  "t19",
+  "t20"
+ ],
+ "competing_chain_task_count_ever": 20,
+ "passes": [
+  {
+   "pass": 1,
+   "exact_matches": 8,
+   "accuracy": 0.4,
+   "tasks_with_competing_chains": 20,
+   "tasks": [
+    {
+     "id": "t01",
+     "candidates_total": 55,
+     "candidates_after_permission_filter": 49,
+     "competing": true,
+     "top_chain": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t02",
+     "candidates_total": 28,
+     "candidates_after_permission_filter": 25,
+     "competing": true,
+     "top_chain": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt",
+      "chargeback_lookup"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "chargeback_lookup"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t03",
+     "candidates_total": 500,
+     "candidates_after_permission_filter": 168,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "find_contact",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "send_email"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "find_contact",
+      "send_email"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t04",
+     "candidates_total": 96,
+     "candidates_after_permission_filter": 74,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t05",
+     "candidates_total": 20,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "create_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_charge"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_customer",
+      "find_charge"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t06",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "create_issue"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t07",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 3,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue",
+      "open_pr",
+      "merge_pr"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "open_pr",
+      "merge_pr"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t08",
+     "candidates_total": 178,
+     "candidates_after_permission_filter": 69,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "create_issue",
+      "invite_collaborator"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [
+      "Repo"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "invite_collaborator"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t09",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t10",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message",
+      "cancel_event"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "cancel_event"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t11",
+     "candidates_total": 271,
+     "candidates_after_permission_filter": 132,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [
+      "FileRef"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t12",
+     "candidates_total": 31,
+     "candidates_after_permission_filter": 10,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t13",
+     "candidates_total": 165,
+     "candidates_after_permission_filter": 130,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t14",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t15",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket",
+      "close_ticket"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "close_ticket"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t16",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t17",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "book_onboarding"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "book_onboarding"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t18",
+     "candidates_total": 12,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "update_deal"
+     ],
+     "top_weight": 0,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_deal",
+      "update_deal"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t19",
+     "candidates_total": 95,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc",
+      "search_mail",
+      "archive_thread"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_mail",
+      "archive_thread"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t20",
+     "candidates_total": 483,
+     "candidates_after_permission_filter": 52,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "exact_match": false
+    }
+   ]
+  },
+  {
+   "pass": 2,
+   "exact_matches": 7,
+   "accuracy": 0.35,
+   "tasks_with_competing_chains": 20,
+   "tasks": [
+    {
+     "id": "t01",
+     "candidates_total": 55,
+     "candidates_after_permission_filter": 49,
+     "competing": true,
+     "top_chain": [
+      "list_invoices",
+      "get_invoice",
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t02",
+     "candidates_total": 28,
+     "candidates_after_permission_filter": 25,
+     "competing": true,
+     "top_chain": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt",
+      "chargeback_lookup"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "chargeback_lookup"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t03",
+     "candidates_total": 500,
+     "candidates_after_permission_filter": 168,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "invoice_pdf",
+      "send_email"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "find_contact",
+      "send_email"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t04",
+     "candidates_total": 96,
+     "candidates_after_permission_filter": 74,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t05",
+     "candidates_total": 20,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "create_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_charge"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_customer",
+      "find_charge"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t06",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "create_issue"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t07",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 3,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue",
+      "open_pr",
+      "merge_pr"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "open_pr",
+      "merge_pr"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t08",
+     "candidates_total": 178,
+     "candidates_after_permission_filter": 69,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "create_issue",
+      "invite_collaborator"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [
+      "Repo"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "invite_collaborator"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t09",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t10",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message",
+      "cancel_event"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "cancel_event"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t11",
+     "candidates_total": 271,
+     "candidates_after_permission_filter": 132,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [
+      "FileRef"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t12",
+     "candidates_total": 31,
+     "candidates_after_permission_filter": 10,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t13",
+     "candidates_total": 165,
+     "candidates_after_permission_filter": 130,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t14",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t15",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket",
+      "close_ticket"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "close_ticket"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t16",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t17",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "book_onboarding"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "book_onboarding"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t18",
+     "candidates_total": 12,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "update_deal"
+     ],
+     "top_weight": 1,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_deal",
+      "update_deal"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t19",
+     "candidates_total": 95,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc",
+      "search_mail",
+      "archive_thread"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_mail",
+      "archive_thread"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t20",
+     "candidates_total": 483,
+     "candidates_after_permission_filter": 52,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "exact_match": false
+    }
+   ]
+  },
+  {
+   "pass": 3,
+   "exact_matches": 7,
+   "accuracy": 0.35,
+   "tasks_with_competing_chains": 20,
+   "tasks": [
+    {
+     "id": "t01",
+     "candidates_total": 55,
+     "candidates_after_permission_filter": 49,
+     "competing": true,
+     "top_chain": [
+      "list_invoices",
+      "get_invoice",
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t02",
+     "candidates_total": 28,
+     "candidates_after_permission_filter": 25,
+     "competing": true,
+     "top_chain": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt",
+      "chargeback_lookup"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "chargeback_lookup"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t03",
+     "candidates_total": 500,
+     "candidates_after_permission_filter": 168,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "invoice_pdf",
+      "send_email"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "find_contact",
+      "send_email"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t04",
+     "candidates_total": 96,
+     "candidates_after_permission_filter": 74,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t05",
+     "candidates_total": 20,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "create_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_charge"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_customer",
+      "find_charge"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t06",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "create_issue"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t07",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 3,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue",
+      "open_pr",
+      "merge_pr"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "open_pr",
+      "merge_pr"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t08",
+     "candidates_total": 178,
+     "candidates_after_permission_filter": 69,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "create_issue",
+      "invite_collaborator"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [
+      "Repo"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "invite_collaborator"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t09",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t10",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message",
+      "cancel_event"
+     ],
+     "top_weight": 9,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "cancel_event"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t11",
+     "candidates_total": 271,
+     "candidates_after_permission_filter": 132,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [
+      "FileRef"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t12",
+     "candidates_total": 31,
+     "candidates_after_permission_filter": 10,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t13",
+     "candidates_total": 165,
+     "candidates_after_permission_filter": 130,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "top_weight": 9,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t14",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t15",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket",
+      "close_ticket"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "close_ticket"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t16",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t17",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "book_onboarding"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "book_onboarding"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t18",
+     "candidates_total": 12,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "update_deal"
+     ],
+     "top_weight": 2,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_deal",
+      "update_deal"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t19",
+     "candidates_total": 95,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc",
+      "search_mail",
+      "archive_thread"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_mail",
+      "archive_thread"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t20",
+     "candidates_total": 483,
+     "candidates_after_permission_filter": 52,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "exact_match": false
+    }
+   ]
+  },
+  {
+   "pass": 4,
+   "exact_matches": 7,
+   "accuracy": 0.35,
+   "tasks_with_competing_chains": 20,
+   "tasks": [
+    {
+     "id": "t01",
+     "candidates_total": 55,
+     "candidates_after_permission_filter": 49,
+     "competing": true,
+     "top_chain": [
+      "list_invoices",
+      "get_invoice",
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "top_weight": 5,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "issue_refund",
+      "send_receipt"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t02",
+     "candidates_total": 28,
+     "candidates_after_permission_filter": 25,
+     "competing": true,
+     "top_chain": [
+      "find_charge",
+      "list_invoices",
+      "get_invoice",
+      "chargeback_lookup"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_charge",
+      "chargeback_lookup"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t03",
+     "candidates_total": 500,
+     "candidates_after_permission_filter": 168,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "invoice_pdf",
+      "send_email"
+     ],
+     "top_weight": 6,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "find_contact",
+      "send_email"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t04",
+     "candidates_total": 96,
+     "candidates_after_permission_filter": 74,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "top_weight": 9,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t05",
+     "candidates_total": 20,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "create_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_charge"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_customer",
+      "find_charge"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t06",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "create_issue"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t07",
+     "candidates_total": 3,
+     "candidates_after_permission_filter": 3,
+     "competing": true,
+     "top_chain": [
+      "search_repo",
+      "create_issue",
+      "open_pr",
+      "merge_pr"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_repo",
+      "open_pr",
+      "merge_pr"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t08",
+     "candidates_total": 178,
+     "candidates_after_permission_filter": 69,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "create_issue",
+      "invite_collaborator"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [
+      "Repo"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_repo",
+      "invite_collaborator"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t09",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "top_weight": 9,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t10",
+     "candidates_total": 9,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "post_message",
+      "cancel_event"
+     ],
+     "top_weight": 12,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_team",
+      "find_slot",
+      "create_event",
+      "cancel_event"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t11",
+     "candidates_total": 271,
+     "candidates_after_permission_filter": 132,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "top_weight": 8,
+     "top_supplied_inputs": [
+      "FileRef"
+     ],
+     "ground_truth": [
+      "lookup_customer",
+      "find_contact",
+      "search_drive",
+      "get_file",
+      "share_file"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t12",
+     "candidates_total": 31,
+     "candidates_after_permission_filter": 10,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t13",
+     "candidates_total": 165,
+     "candidates_after_permission_filter": 130,
+     "competing": true,
+     "top_chain": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "void_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "top_weight": 12,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "lookup_customer",
+      "list_invoices",
+      "get_invoice",
+      "invoice_pdf",
+      "sign_pdf"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t14",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "escalate_ticket"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t15",
+     "candidates_total": 2,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "get_ticket",
+      "escalate_ticket",
+      "close_ticket"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "get_ticket",
+      "close_ticket"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t16",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "assign_laptop"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t17",
+     "candidates_total": 16,
+     "candidates_after_permission_filter": 2,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "book_onboarding"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "create_employee",
+      "book_onboarding"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t18",
+     "candidates_total": 12,
+     "candidates_after_permission_filter": 6,
+     "competing": true,
+     "top_chain": [
+      "find_deal",
+      "update_deal"
+     ],
+     "top_weight": 3,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "find_deal",
+      "update_deal"
+     ],
+     "exact_match": true
+    },
+    {
+     "id": "t19",
+     "candidates_total": 95,
+     "candidates_after_permission_filter": 9,
+     "competing": true,
+     "top_chain": [
+      "search_drive",
+      "summarize_doc",
+      "search_mail",
+      "archive_thread"
+     ],
+     "top_weight": 4,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_mail",
+      "archive_thread"
+     ],
+     "exact_match": false
+    },
+    {
+     "id": "t20",
+     "candidates_total": 483,
+     "candidates_after_permission_filter": 52,
+     "competing": true,
+     "top_chain": [
+      "create_employee",
+      "assign_laptop",
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "top_weight": 8,
+     "top_supplied_inputs": [],
+     "ground_truth": [
+      "search_drive",
+      "summarize_doc",
+      "send_email_text"
+     ],
+     "exact_match": false
+    }
+   ]
+  }
+ ]
+}

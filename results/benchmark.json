@@ -1,0 +1,784 @@
+{
+ "arm_a_preload": {
+  "name": "preload-all",
+  "tools_loaded_per_task": 329,
+  "tokens_per_task": 27000,
+  "chain_accuracy": "n/a-by-construction",
+  "note": "retrieved set = all tools, chain always contained; the preload cost is the story"
+ },
+ "arm_b_vector_topk": {
+  "name": "vector-top-k",
+  "method": "TF-IDF cosine over tool key+description vs task text (pure Python lexical retrieval; sklearn not installed; NOT a neural embedding model)",
+  "k": 10,
+  "mean_chain_recall": 0.4,
+  "tasks_with_full_chain": 8,
+  "mean_tokens": 823.2,
+  "tasks": [
+   {
+    "id": "t01",
+    "retrieved": [
+     "send_receipt",
+     "send_email_text",
+     "send_email",
+     "receipt_template_web_github",
+     "receipt_template_billing_drive",
+     "receipt_template_mobile_payments",
+     "receipt_template_regional_drive",
+     "receipt_template_trial_drive",
+     "receipt_template_billing_support",
+     "receipt_template_enterprise_chat"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "send_receipt"
+    ],
+    "chain_missing": [
+     "find_charge",
+     "issue_refund"
+    ],
+    "tokens": 820
+   },
+   {
+    "id": "t02",
+    "retrieved": [
+     "check_trial_github_status",
+     "check_web_github_status",
+     "check_retail_crm_status",
+     "check_trial_crm_status",
+     "check_partner_support_status",
+     "check_sales_calendar_status",
+     "check_web_hr_status",
+     "check_sales_ops_status",
+     "check_web_analytics_status",
+     "find_charge"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "find_charge"
+    ],
+    "chain_missing": [
+     "chargeback_lookup"
+    ],
+    "tokens": 828
+   },
+   {
+    "id": "t03",
+    "retrieved": [
+     "invoice_pdf",
+     "find_contact",
+     "send_email",
+     "get_invoice",
+     "sign_pdf",
+     "void_invoice",
+     "invoice_reminder_legacy_github",
+     "invoice_reminder_regional_crm",
+     "invoice_reminder_sales_crm",
+     "invoice_reminder_trial_drive"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "find_contact",
+     "get_invoice",
+     "invoice_pdf",
+     "send_email"
+    ],
+    "chain_missing": [
+     "list_invoices",
+     "lookup_customer"
+    ],
+    "tokens": 810
+   },
+   {
+    "id": "t04",
+    "retrieved": [
+     "void_invoice",
+     "invoice_reminder_legacy_github",
+     "invoice_reminder_regional_crm",
+     "invoice_reminder_sales_crm",
+     "invoice_reminder_trial_drive",
+     "invoice_reminder_vendor_crm",
+     "invoice_reminder_billing_calendar",
+     "invoice_reminder_enterprise_misc",
+     "invoice_reminder_retail_mail",
+     "invoice_reminder_retail_misc"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "void_invoice"
+    ],
+    "chain_missing": [
+     "get_invoice",
+     "list_invoices",
+     "lookup_customer"
+    ],
+    "tokens": 820
+   },
+   {
+    "id": "t05",
+    "retrieved": [
+     "find_contact",
+     "find_charge",
+     "create_customer",
+     "send_receipt",
+     "lookup_customer",
+     "find_team",
+     "get_invoice",
+     "create_employee",
+     "create_event",
+     "find_slot"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "create_customer",
+     "find_charge"
+    ],
+    "chain_missing": [],
+    "tokens": 834
+   },
+   {
+    "id": "t06",
+    "retrieved": [
+     "create_issue",
+     "open_pr",
+     "search_repo",
+     "issue_refund",
+     "find_charge",
+     "send_receipt",
+     "get_invoice",
+     "lookup_customer",
+     "invite_collaborator",
+     "find_contact"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "create_issue",
+     "search_repo"
+    ],
+    "chain_missing": [],
+    "tokens": 842
+   },
+   {
+    "id": "t07",
+    "retrieved": [
+     "open_pr",
+     "search_repo",
+     "merge_pr",
+     "invite_collaborator",
+     "create_issue",
+     "search_drive",
+     "search_mail",
+     "find_team",
+     "get_file",
+     "create_customer"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "merge_pr",
+     "open_pr",
+     "search_repo"
+    ],
+    "chain_missing": [],
+    "tokens": 822
+   },
+   {
+    "id": "t08",
+    "retrieved": [
+     "invite_collaborator",
+     "search_repo",
+     "find_contact",
+     "contact_export_internal_github",
+     "contact_export_retail_crm",
+     "contact_export_sales_drive",
+     "contact_export_web_crm",
+     "contact_export_legacy_hr",
+     "contact_export_partner_misc",
+     "contact_export_regional_support"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "find_contact",
+     "invite_collaborator",
+     "search_repo"
+    ],
+    "chain_missing": [
+     "lookup_customer"
+    ],
+    "tokens": 820
+   },
+   {
+    "id": "t09",
+    "retrieved": [
+     "find_team",
+     "schedule_partner_chat_job",
+     "notify_mobile_github_team",
+     "notify_regional_github_team",
+     "notify_sales_github_team",
+     "notify_enterprise_payments_team",
+     "notify_partner_crm_team",
+     "notify_partner_drive_team",
+     "notify_partner_payments_team",
+     "notify_sales_drive_team"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "find_team"
+    ],
+    "chain_missing": [
+     "create_event",
+     "find_slot",
+     "post_message"
+    ],
+    "tokens": 820
+   },
+   {
+    "id": "t10",
+    "retrieved": [
+     "cancel_event",
+     "create_event",
+     "find_team",
+     "get_invoice",
+     "post_message",
+     "notify_mobile_github_team",
+     "notify_regional_github_team",
+     "notify_sales_github_team",
+     "notify_enterprise_payments_team",
+     "notify_partner_crm_team"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "cancel_event",
+     "create_event",
+     "find_team"
+    ],
+    "chain_missing": [
+     "find_slot"
+    ],
+    "tokens": 820
+   },
+   {
+    "id": "t11",
+    "retrieved": [
+     "share_file",
+     "find_contact",
+     "invoice_reminder_trial_drive",
+     "get_invoice",
+     "contact_export_sales_drive",
+     "import_mobile_drive_file",
+     "find_team",
+     "find_charge",
+     "get_file",
+     "void_invoice"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "find_contact",
+     "get_file",
+     "share_file"
+    ],
+    "chain_missing": [
+     "lookup_customer",
+     "search_drive"
+    ],
+    "tokens": 826
+   },
+   {
+    "id": "t12",
+    "retrieved": [
+     "summarize_doc",
+     "book_onboarding",
+     "search_drive",
+     "notify_partner_drive_team",
+     "notify_sales_drive_team",
+     "archive_legacy_drive_items",
+     "archive_regional_drive_items",
+     "audit_enterprise_drive_log",
+     "audit_vendor_drive_log",
+     "contact_export_sales_drive"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "search_drive",
+     "summarize_doc"
+    ],
+    "chain_missing": [],
+    "tokens": 820
+   },
+   {
+    "id": "t13",
+    "retrieved": [
+     "sign_pdf",
+     "invoice_pdf",
+     "void_invoice",
+     "invoice_reminder_legacy_github",
+     "invoice_reminder_regional_crm",
+     "invoice_reminder_sales_crm",
+     "invoice_reminder_trial_drive",
+     "invoice_reminder_vendor_crm",
+     "invoice_reminder_billing_calendar",
+     "invoice_reminder_enterprise_misc"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "invoice_pdf",
+     "sign_pdf"
+    ],
+    "chain_missing": [
+     "get_invoice",
+     "list_invoices",
+     "lookup_customer"
+    ],
+    "tokens": 814
+   },
+   {
+    "id": "t14",
+    "retrieved": [
+     "escalate_ticket",
+     "get_ticket",
+     "close_ticket",
+     "export_web_support_report",
+     "search_regional_support_archive",
+     "search_trial_support_archive",
+     "monitor_internal_payments_queue",
+     "monitor_legacy_crm_queue",
+     "monitor_billing_calendar_queue",
+     "monitor_enterprise_mail_queue"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "escalate_ticket",
+     "get_ticket"
+    ],
+    "chain_missing": [],
+    "tokens": 820
+   },
+   {
+    "id": "t15",
+    "retrieved": [
+     "close_ticket",
+     "get_ticket",
+     "escalate_ticket",
+     "archive_enterprise_github_items",
+     "archive_internal_calendar_items",
+     "archive_internal_support_items",
+     "archive_legacy_drive_items",
+     "archive_mobile_calendar_items",
+     "archive_mobile_crm_items",
+     "archive_partner_github_items"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "close_ticket",
+     "get_ticket"
+    ],
+    "chain_missing": [],
+    "tokens": 820
+   },
+   {
+    "id": "t16",
+    "retrieved": [
+     "assign_laptop",
+     "create_employee",
+     "create_customer",
+     "get_invoice",
+     "create_event",
+     "find_charge",
+     "create_issue",
+     "create_channel",
+     "lookup_customer",
+     "send_receipt"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "assign_laptop",
+     "create_employee"
+    ],
+    "chain_missing": [],
+    "tokens": 836
+   },
+   {
+    "id": "t17",
+    "retrieved": [
+     "book_onboarding",
+     "find_contact",
+     "send_receipt",
+     "find_charge",
+     "search_drive",
+     "search_mail",
+     "find_team",
+     "get_file",
+     "create_customer",
+     "archive_thread"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "book_onboarding"
+    ],
+    "chain_missing": [
+     "create_employee"
+    ],
+    "tokens": 824
+   },
+   {
+    "id": "t18",
+    "retrieved": [
+     "update_deal",
+     "find_deal",
+     "update_internal_drive_settings",
+     "update_web_drive_settings",
+     "update_enterprise_calendar_settings",
+     "update_regional_hr_settings",
+     "update_trial_mail_settings",
+     "update_vendor_hr_settings",
+     "update_vendor_mail_settings",
+     "update_vendor_analytics_settings"
+    ],
+    "chain_recall": true,
+    "chain_found": [
+     "find_deal",
+     "update_deal"
+    ],
+    "chain_missing": [],
+    "tokens": 820
+   },
+   {
+    "id": "t19",
+    "retrieved": [
+     "archive_thread",
+     "find_team",
+     "find_charge",
+     "void_invoice",
+     "find_contact",
+     "invoice_reminder_legacy_github",
+     "invoice_reminder_regional_crm",
+     "invoice_reminder_sales_crm",
+     "invoice_reminder_trial_drive",
+     "invoice_reminder_vendor_crm"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "archive_thread"
+    ],
+    "chain_missing": [
+     "search_mail"
+    ],
+    "tokens": 826
+   },
+   {
+    "id": "t20",
+    "retrieved": [
+     "book_onboarding",
+     "summarize_doc",
+     "send_email",
+     "send_email_text",
+     "email_campaign_trial_github",
+     "email_campaign_internal_crm",
+     "email_campaign_mobile_crm",
+     "email_campaign_legacy_chat",
+     "email_campaign_partner_mail",
+     "email_campaign_regional_hr"
+    ],
+    "chain_recall": false,
+    "chain_found": [
+     "send_email_text",
+     "summarize_doc"
+    ],
+    "chain_missing": [
+     "search_drive"
+    ],
+    "tokens": 822
+   }
+  ]
+ },
+ "arm_c_graph": {
+  "name": "graph-waypoint",
+  "chain_accuracy_exact": 20,
+  "tasks": 20,
+  "mean_tokens": 253.7,
+  "mean_round_trips": 7.35,
+  "mean_latency_ms": 1087.9,
+  "p95_latency_ms": 1369.6,
+  "per_task": [
+   {
+    "id": "t01",
+    "chain": [
+     "find_charge",
+     "issue_refund",
+     "send_receipt"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 258,
+    "round_trips": 7,
+    "latency_ms": 1027.1,
+    "method": "mspaths"
+   },
+   {
+    "id": "t02",
+    "chain": [
+     "find_charge",
+     "chargeback_lookup"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 172,
+    "round_trips": 7,
+    "latency_ms": 991.5,
+    "method": "mspaths"
+   },
+   {
+    "id": "t03",
+    "chain": [
+     "lookup_customer",
+     "list_invoices",
+     "get_invoice",
+     "invoice_pdf",
+     "find_contact",
+     "send_email"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 494,
+    "round_trips": 8,
+    "latency_ms": 1422.7,
+    "method": "resolver"
+   },
+   {
+    "id": "t04",
+    "chain": [
+     "lookup_customer",
+     "list_invoices",
+     "get_invoice",
+     "void_invoice"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 338,
+    "round_trips": 7,
+    "latency_ms": 949.0,
+    "method": "mspaths"
+   },
+   {
+    "id": "t05",
+    "chain": [
+     "create_customer",
+     "find_charge"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 172,
+    "round_trips": 7,
+    "latency_ms": 926.5,
+    "method": "mspaths"
+   },
+   {
+    "id": "t06",
+    "chain": [
+     "search_repo",
+     "create_issue"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 937.6,
+    "method": "mspaths"
+   },
+   {
+    "id": "t07",
+    "chain": [
+     "search_repo",
+     "open_pr",
+     "merge_pr"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 246,
+    "round_trips": 7,
+    "latency_ms": 962.6,
+    "method": "mspaths"
+   },
+   {
+    "id": "t08",
+    "chain": [
+     "lookup_customer",
+     "find_contact",
+     "search_repo",
+     "invite_collaborator"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 340,
+    "round_trips": 8,
+    "latency_ms": 1369.6,
+    "method": "resolver"
+   },
+   {
+    "id": "t09",
+    "chain": [
+     "find_team",
+     "find_slot",
+     "create_event",
+     "post_message"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 330,
+    "round_trips": 8,
+    "latency_ms": 1250.1,
+    "method": "resolver"
+   },
+   {
+    "id": "t10",
+    "chain": [
+     "find_team",
+     "find_slot",
+     "create_event",
+     "cancel_event"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 328,
+    "round_trips": 7,
+    "latency_ms": 937.3,
+    "method": "mspaths"
+   },
+   {
+    "id": "t11",
+    "chain": [
+     "lookup_customer",
+     "find_contact",
+     "search_drive",
+     "get_file",
+     "share_file"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 422,
+    "round_trips": 8,
+    "latency_ms": 1313.4,
+    "method": "resolver"
+   },
+   {
+    "id": "t12",
+    "chain": [
+     "search_drive",
+     "summarize_doc"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 8,
+    "latency_ms": 1227.4,
+    "method": "resolver"
+   },
+   {
+    "id": "t13",
+    "chain": [
+     "lookup_customer",
+     "list_invoices",
+     "get_invoice",
+     "invoice_pdf",
+     "sign_pdf"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 414,
+    "round_trips": 8,
+    "latency_ms": 1189.0,
+    "method": "resolver"
+   },
+   {
+    "id": "t14",
+    "chain": [
+     "get_ticket",
+     "escalate_ticket"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 958.8,
+    "method": "mspaths"
+   },
+   {
+    "id": "t15",
+    "chain": [
+     "get_ticket",
+     "close_ticket"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 1027.0,
+    "method": "mspaths"
+   },
+   {
+    "id": "t16",
+    "chain": [
+     "create_employee",
+     "assign_laptop"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 974.1,
+    "method": "mspaths"
+   },
+   {
+    "id": "t17",
+    "chain": [
+     "create_employee",
+     "book_onboarding"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 999.3,
+    "method": "mspaths"
+   },
+   {
+    "id": "t18",
+    "chain": [
+     "find_deal",
+     "update_deal"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 939.1,
+    "method": "mspaths"
+   },
+   {
+    "id": "t19",
+    "chain": [
+     "search_mail",
+     "archive_thread"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 164,
+    "round_trips": 7,
+    "latency_ms": 1081.3,
+    "method": "mspaths"
+   },
+   {
+    "id": "t20",
+    "chain": [
+     "search_drive",
+     "summarize_doc",
+     "send_email_text"
+    ],
+    "exact_match": true,
+    "refused": false,
+    "tokens_loaded": 248,
+    "round_trips": 8,
+    "latency_ms": 1274.8,
+    "method": "resolver"
+   }
+  ]
+ }
+}

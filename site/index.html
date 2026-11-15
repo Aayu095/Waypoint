@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waypoint — Agents pull only what the task needs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0908;
+    --panel:#100e0c;
+    --panel2:#14110e;
+    --line:rgba(255,255,255,.08);
+    --line2:rgba(255,255,255,.14);
+    --ink:#f2ede7;
+    --dim:#9a917f;
+    --faint:#5d574c;
+    --orange:#ff4d00;
+    --orange-dim:rgba(255,77,0,.14);
+    --grey-bar:#3a352d;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  html.snap *, html.snap *::before, html.snap *::after{transition:none !important; animation:none !important}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+  ::selection{background:var(--orange);color:#0a0908}
+
+  /* dot grid backdrop */
+  .dots{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:radial-gradient(rgba(255,255,255,.055) 1px, transparent 1px);
+    background-size:26px 26px;
+  }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative; min-height:100vh; z-index:1;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:56px 32px; overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  /* the flood */
+  #flood{
+    position:absolute; inset:0; z-index:0; overflow:hidden;
+    display:flex; flex-wrap:wrap; align-content:flex-start; justify-content:center;
+    gap:7px; padding:14px 10px;
+    -webkit-mask-image:radial-gradient(ellipse 90% 88% at 50% 50%, black 55%, transparent 100%);
+            mask-image:radial-gradient(ellipse 90% 88% at 50% 50%, black 55%, transparent 100%);
+  }
+  .chip{
+    font-family:"JetBrains Mono",ui-monospace,monospace;
+    font-size:10.5px; line-height:1; letter-spacing:.01em;
+    color:#6f695c; background:rgba(255,255,255,.028);
+    border:1px solid rgba(255,255,255,.055);
+    padding:5px 8px; border-radius:99px; white-space:nowrap;
+    /* Phase 15 perf: transform+opacity only — an animated filter (blur) on
+       ~320 chips was the melt's biggest paint cost; and no standing
+       will-change on 329 nodes (that forced 329 promoted layers). Paint is
+       contained per chip so one chip's fade never repaints its neighbours. */
+    transition:opacity .8s ease, transform .8s ease, background .4s, color .4s, border-color .4s;
+    animation:drift var(--dur,7s) ease-in-out var(--del,0s) infinite alternate;
+    contain:layout paint;
+  }
+  @keyframes drift{
+    from{transform:translate(0,0)}
+    to{transform:translate(var(--dx,4px),var(--dy,-5px))}
+  }
+  body.routed .chip{animation:none}
+  body.routed .chip.gone{opacity:.045; transform:scale(.82)}
+  .chip.chain{position:relative; z-index:6}
+  body.routed .chip.chain{
+    color:#ffb59a; border-color:rgba(255,77,0,.55); background:rgba(255,77,0,.10);
+    font-size:10.5px; padding:6px 11px; font-weight:700;
+    box-shadow:0 0 0 1px rgba(255,77,0,.25), 0 10px 34px rgba(0,0,0,.55);
+  }
+  body.routed .chip.chain.lit{
+    background:var(--orange); color:#140a05; border-color:var(--orange);
+    box-shadow:0 0 26px rgba(255,77,0,.45), 0 10px 34px rgba(0,0,0,.55);
+  }
+  #pathline{
+    position:absolute; z-index:5; height:2px; background:linear-gradient(90deg, rgba(255,77,0,.05), var(--orange), rgba(255,77,0,.05));
+    transform-origin:left center; transform:scaleX(0); opacity:0;
+    transition:transform 1.3s ease, opacity .5s ease;
+  }
+  body.lining #pathline{transform:scaleX(1); opacity:.85}
+
+  .hero-inner{position:relative; z-index:10; width:100%; max-width:1180px; display:flex; flex-direction:column; align-items:center; text-align:center}
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.22em; color:var(--dim);
+    border:1px solid var(--line2); border-radius:99px; padding:7px 14px; background:rgba(10,9,8,.72);
+    display:inline-flex; gap:10px; align-items:center;
+  }
+  .eyebrow b{color:var(--orange); font-weight:700}
+  .eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--orange); box-shadow:0 0 10px var(--orange)}
+
+  .hl{margin-top:34px; min-height:212px; display:flex; flex-direction:column; align-items:center; justify-content:center}
+  .hl h1{
+    font-size:clamp(44px, 6.4vw, 80px); line-height:1.02; font-weight:700; letter-spacing:-.02em;
+    text-shadow:0 4px 44px rgba(0,0,0,.9), 0 0 90px rgba(0,0,0,.85);
+  }
+  .hl .l2{display:block; margin-top:6px}
+  #hl-flood .l2{opacity:0; transform:translateY(10px); transition:opacity .7s ease, transform .7s ease}
+  #hl-flood .l2.show{opacity:1; transform:none}
+  #hl-flood .l2 em{font-style:normal; color:var(--orange)}
+  .hl .swap{transition:opacity .45s ease, transform .45s ease}
+  .hl .hidden{opacity:0; transform:translateY(12px); pointer-events:none; position:absolute; visibility:hidden}
+  #hl-resolved h1 .brand{color:var(--ink)}
+  #hl-resolved .pull{
+    display:block; font-size:clamp(30px, 4.2vw, 52px); font-weight:600; color:var(--ink); margin-top:8px; letter-spacing:-.015em;
+  }
+  #hl-resolved .pull span{color:var(--orange)}
+
+  /* task bar */
+  .taskbar{
+    margin-top:26px; width:min(760px, 92vw);
+    display:flex; align-items:stretch; gap:0;
+    background:rgba(16,14,12,.92); border:1px solid var(--line2); border-radius:14px;
+    box-shadow:0 24px 60px rgba(0,0,0,.6); overflow:hidden; text-align:left;
+  }
+  .taskbar .prompt{
+    flex:1; display:flex; align-items:center; gap:12px; padding:16px 18px;
+    font-size:16.5px; color:var(--ink); min-width:0;
+  }
+  .taskbar .prompt .cursor{color:var(--orange); font-family:"JetBrains Mono",monospace; font-weight:700}
+  .taskbar .prompt span.txt{white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  #routeBtn{
+    border:none; cursor:pointer; background:var(--orange); color:#160b04;
+    font-family:"Space Grotesk",sans-serif; font-weight:700; font-size:16px;
+    padding:0 26px; letter-spacing:.01em; transition:filter .2s, transform .1s;
+  }
+  #routeBtn:hover{filter:brightness(1.12)}
+  #routeBtn:active{transform:scale(.98)}
+  #routeBtn:disabled{filter:grayscale(.4) brightness(.75); cursor:default}
+
+  /* token readout */
+  .readout{
+    margin-top:14px; display:flex; align-items:baseline; gap:14px;
+    font-family:"JetBrains Mono",monospace;
+    background:rgba(10,9,8,.62); padding:9px 18px; border-radius:99px;
+  }
+  .readout .lbl{font-size:10.5px; letter-spacing:.2em; color:var(--faint)}
+  .readout .num{font-size:34px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; transition:color .4s}
+  body.routed .readout .num{color:var(--orange)}
+  .readout .of{font-size:12px; color:var(--dim)}
+
+  /* path stage — reserves the space the six chips land in */
+  #pathstage{position:relative; width:100%; height:86px; margin-top:6px}
+  /* snap mode: the path is a plain in-flow row — no measurement, no transforms */
+  #pathrow{position:absolute; left:0; right:0; top:8px; display:none; justify-content:center; gap:40px; z-index:6}
+  body.snaproute #pathrow{display:flex}
+  body.snaproute #pathline{display:none}
+  #pathrow::after{
+    content:""; position:absolute; left:9%; right:9%; top:50%; height:2px; margin-top:-1px; z-index:-1;
+    background:linear-gradient(90deg, rgba(255,77,0,.05), var(--orange), rgba(255,77,0,.05)); opacity:.85;
+  }
+  #pathrow .chip{animation:none}
+  #pathcap{
+    position:absolute; left:50%; top:50px; transform:translateX(-50%);
+    font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.14em; color:var(--dim);
+    opacity:0; transition:opacity .6s ease; white-space:nowrap;
+  }
+  body.landed #pathcap{opacity:1}
+  #pathcap b{color:var(--orange); font-weight:700}
+
+  .subline{
+    margin-top:0; max-height:0; overflow:hidden;
+    font-size:17px; color:var(--dim); max-width:720px; line-height:1.45;
+    opacity:0; transform:translateY(8px);
+    transition:opacity .7s ease, transform .7s ease, max-height .7s ease, margin-top .7s ease;
+  }
+  body.landed .subline{opacity:1; transform:none; max-height:90px; margin-top:8px}
+  .subline b{color:var(--ink); font-weight:600}
+
+  .ctas{margin-top:0; max-height:0; overflow:hidden; display:flex; gap:14px; opacity:0; transform:translateY(8px); transition:opacity .7s ease, transform .7s ease, max-height .7s ease, margin-top .7s ease}
+  body.landed .ctas{opacity:1; transform:none; max-height:76px; margin-top:26px}
+  .btn{
+    display:inline-flex; align-items:center; gap:9px; text-decoration:none;
+    font-weight:600; font-size:15.5px; padding:14px 24px; border-radius:11px;
+    transition:filter .2s, border-color .2s;
+  }
+  .btn.primary{background:var(--ink); color:#12100d}
+  .btn.primary:hover{filter:brightness(.88)}
+  .btn.ghost{border:1px solid var(--line2); color:var(--ink); background:rgba(16,14,12,.6)}
+  .btn.ghost:hover{border-color:rgba(255,255,255,.35)}
+  .scrollhint{
+    position:absolute; bottom:22px; left:50%; transform:translateX(-50%); z-index:10;
+    font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.26em; color:var(--faint);
+  }
+
+  /* ============ SECTIONS ============ */
+  main{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 32px}
+  section{padding:84px 0 76px; border-bottom:1px solid var(--line)}
+  .kick{
+    font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.24em; color:var(--orange);
+    display:flex; align-items:center; gap:12px;
+  }
+  .kick::after{content:""; flex:1; height:1px; background:var(--line)}
+  h2{font-size:clamp(30px, 3.6vw, 44px); font-weight:700; letter-spacing:-.018em; margin-top:18px; line-height:1.08}
+  .oneline{margin-top:12px; font-size:16.5px; color:var(--dim); line-height:1.5; max-width:760px}
+  .oneline b{color:var(--ink); font-weight:600}
+  .bento{display:grid; gap:14px; margin-top:34px}
+  .card{
+    background:linear-gradient(180deg, var(--panel2), var(--panel));
+    border:1px solid var(--line); border-radius:16px; padding:26px 28px;
+  }
+  .card .clabel{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.2em; color:var(--faint)}
+  .nchip{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:"JetBrains Mono",monospace; font-size:12.5px; font-weight:500;
+    border:1px solid var(--line2); border-radius:99px; padding:6px 12px; color:var(--ink); background:rgba(255,255,255,.03);
+  }
+  .nchip b{color:var(--orange); font-weight:700}
+  .nchip.dim{color:var(--dim)}
+  .chiprow{display:flex; flex-wrap:wrap; gap:9px}
+
+  /* race */
+  .race{display:flex; flex-direction:column; gap:20px}
+  .racerow{display:grid; grid-template-columns:170px 1fr 210px; align-items:center; gap:18px}
+  .racerow .rname{font-family:"JetBrains Mono",monospace; font-size:12.5px; color:var(--dim); letter-spacing:.04em}
+  .racerow .rname b{color:var(--ink); display:block; font-size:13.5px}
+  .track{height:30px; background:rgba(255,255,255,.035); border:1px solid var(--line); border-radius:8px; overflow:hidden}
+  .fill{height:100%; border-radius:7px 0 0 7px}
+  .fill.preload{width:100%; background:repeating-linear-gradient(45deg,#45403a,#45403a 9px,#3b372f 9px,#3b372f 18px)}
+  .fill.vector{width:65.8%; background:#6e675b}
+  .fill.graph{width:54.2%; background:var(--orange); box-shadow:0 0 22px rgba(255,77,0,.35)}
+  .racerow .rstat{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--dim); text-align:right; font-variant-numeric:tabular-nums}
+  .racerow .rstat b{color:var(--ink); font-size:17px}
+  .racerow .rstat .win{color:var(--orange); font-weight:700}
+  .scalenote{font-family:"JetBrains Mono",monospace; font-size:10.5px; color:var(--faint); letter-spacing:.08em}
+
+  /* learns */
+  .learnwrap{display:grid; grid-template-columns:1fr 300px; gap:14px}
+  .learnside{display:flex; flex-direction:column; gap:14px}
+  .bignum{font-size:52px; font-weight:700; letter-spacing:-.02em; line-height:1; font-variant-numeric:tabular-nums}
+  .bignum small{font-size:22px; color:var(--faint); font-weight:500}
+  .bignum.orange{color:var(--orange)}
+  .card p{color:var(--dim); font-size:14.5px; line-height:1.55; margin-top:10px}
+  .card p b{color:var(--ink)}
+
+  /* holds up */
+  .vs{display:grid; grid-template-columns:1fr 64px 1fr; gap:0; align-items:stretch}
+  .vscard{border:1px solid var(--line); border-radius:16px; padding:30px 32px; background:linear-gradient(180deg, var(--panel2), var(--panel))}
+  .vscard.after{border-color:rgba(255,77,0,.4); background:linear-gradient(180deg, rgba(255,77,0,.07), var(--panel))}
+  .vsarrow{display:flex; align-items:center; justify-content:center; font-size:30px; color:var(--orange); font-weight:700}
+  .vsstats{display:flex; gap:38px; margin-top:16px; flex-wrap:wrap}
+  .vsstat .v{font-size:46px; font-weight:700; line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+  .vsstat .k{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.18em; color:var(--faint); margin-top:8px}
+  .vscard.before .v{color:#8d8577}
+  .vscard.after .v{color:var(--ink)}
+  .vscard.after .v.hot{color:var(--orange)}
+
+  /* your tools */
+  .toolgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .chainrow{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px}
+  .tchip{
+    font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:700;
+    border:1px solid rgba(255,77,0,.5); color:#ffb59a; background:var(--orange-dim);
+    padding:8px 13px; border-radius:99px;
+  }
+  .tchip.grey{border-color:var(--line2); color:var(--ink); background:rgba(255,255,255,.03)}
+  .arr{color:var(--orange); font-weight:700}
+  .smallnote{margin-top:18px; font-size:13.5px; color:var(--faint); display:flex; gap:9px; align-items:center}
+  .smallnote .x{
+    font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:700; color:var(--orange);
+    border:1px solid rgba(255,77,0,.5); border-radius:6px; padding:2px 7px; white-space:nowrap;
+  }
+
+  /* install */
+  .codecard{
+    background:#0d0b09; border:1px solid var(--line2); border-radius:16px; overflow:hidden;
+  }
+  .codehead{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 18px; border-bottom:1px solid var(--line);
+    font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.16em; color:var(--faint);
+  }
+  #copyBtn{
+    cursor:pointer; border:1px solid var(--line2); background:rgba(255,255,255,.04); color:var(--ink);
+    font-family:"JetBrains Mono",monospace; font-size:12px; font-weight:700;
+    padding:8px 15px; border-radius:8px; letter-spacing:.04em; transition:all .2s;
+  }
+  #copyBtn:hover{border-color:var(--orange); color:var(--orange)}
+  #copyBtn.copied{border-color:var(--orange); background:var(--orange); color:#160b04}
+  pre{
+    padding:24px 26px; overflow-x:auto;
+    font-family:"JetBrains Mono",monospace; font-size:14.5px; line-height:1.65; color:#d8d2c6;
+  }
+  pre .k{color:#ffb59a} pre .s{color:#a8c686} pre .p{color:#7d7668}
+
+  /* footer — Phase 15: a proper closing on the sections' own column
+     (same max-width + side padding as main), sign-off centred above a
+     divider, then one balanced row: wordmark · credits · pricing chip */
+  footer{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:48px 32px 40px}
+  .signoff{text-align:center; font-size:16px; color:var(--dim); letter-spacing:.01em}
+  .foot{
+    margin-top:26px; padding-top:26px; border-top:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+    font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--faint); letter-spacing:.05em;
+  }
+  .foot .wm{font-family:"Space Grotesk",sans-serif; font-size:15px; font-weight:700; letter-spacing:.04em; color:var(--ink); white-space:nowrap}
+  .foot .wm sup{color:var(--orange); font-size:9px; margin-left:1px}
+  .foot .mid{text-align:center; line-height:1.7}
+
+  @media (max-width:900px){
+    .foot{flex-direction:column; gap:12px; text-align:center}
+    .racerow{grid-template-columns:1fr; gap:8px}
+    .racerow .rstat{text-align:left}
+    .learnwrap,.toolgrid,.vs{grid-template-columns:1fr}
+    .vsarrow{transform:rotate(90deg); padding:6px 0}
+    .hl{min-height:0}
+    .taskbar .prompt span.txt{white-space:normal}
+  }
+
+  /* ============ PHASE 17 — evidence sections come alive on scroll ============
+     Pre-animation states exist ONLY under html.ev — a class the Phase 17
+     script at the end of this file adds when, and only when, the animation
+     will actually run (JS on, no prefers-reduced-motion, no ?state= shot
+     mode, IntersectionObserver available). Without it, no rule below
+     applies and every section renders in its final state, exactly as
+     before this phase. The observer adds .inview once per section; every
+     animation ends on the value the page already printed statically.
+     transform/opacity/stroke-dashoffset only — no animated filter, blur
+     or shadow (the Phase 15 lesson), and no layout shift: race bars
+     scale inside their existing tracks, final sizes are layout sizes. */
+
+  /* 01 · THE RACE — bars grow inside their tracks, winner last */
+  html.ev #race .fill{transform:scaleX(0); transform-origin:left center}
+  html.ev #race.inview .fill{transform:scaleX(1); transition:transform 1.2s cubic-bezier(.22,.9,.26,1)}
+  html.ev #race.inview .racerow:nth-child(2) .fill{transition-delay:.15s}
+  html.ev #race.inview .racerow:nth-child(3) .fill{transition-delay:.3s}
+
+  /* 02 · IT LEARNS — v1 appears plainly first; the v2 curve then draws
+     itself left to right, dots and labels landing as the line reaches them */
+  html.ev #learns .lv1{opacity:0}
+  html.ev #learns.inview .lv1{opacity:1; transition:opacity .7s ease .05s}
+  html.ev #learns .lv2line{stroke-dasharray:1; stroke-dashoffset:1}
+  html.ev #learns.inview .lv2line{stroke-dashoffset:0; transition:stroke-dashoffset 1.2s ease-out .3s}
+  html.ev #learns .lv2dots circle, html.ev #learns .lv2labs text{opacity:0}
+  html.ev #learns.inview .lv2dots circle, html.ev #learns.inview .lv2labs text{opacity:1; transition:opacity .3s ease}
+  html.ev #learns.inview .lv2dots circle:nth-child(1){transition-delay:.32s}
+  html.ev #learns.inview .lv2dots circle:nth-child(2){transition-delay:.72s}
+  html.ev #learns.inview .lv2dots circle:nth-child(3){transition-delay:1.12s}
+  html.ev #learns.inview .lv2dots circle:nth-child(4){transition-delay:1.5s}
+  html.ev #learns.inview .lv2labs text:nth-child(1){transition-delay:.42s}
+  html.ev #learns.inview .lv2labs text:nth-child(2){transition-delay:.82s}
+  html.ev #learns.inview .lv2labs text:nth-child(3){transition-delay:1.35s}
+  html.ev #learns .learnside .card{opacity:0; transform:translateY(10px)}
+  html.ev #learns.inview .learnside .card{opacity:1; transform:none; transition:opacity .7s ease, transform .7s ease}
+  html.ev #learns.inview .learnside .card:nth-child(2){transition-delay:.25s}
+
+  /* 03 · IT HOLDS UP — cards land in story order: before, arrow, after */
+  html.ev #load .vscard, html.ev #load .vsarrow{opacity:0; transform:translateY(10px)}
+  html.ev #load.inview .vscard, html.ev #load.inview .vsarrow{opacity:1; transform:none; transition:opacity .6s ease, transform .6s ease}
+  html.ev #load.inview .vsarrow{transition-delay:.18s}
+  html.ev #load.inview .vscard.after{transition-delay:.36s}
+  html.ev #load .chiprow{opacity:0}
+  html.ev #load.inview .chiprow{opacity:1; transition:opacity .6s ease .7s}
+
+  /* 04 · YOUR TOOLS + 05 · INSTALL — a quiet staggered rise, nothing more */
+  html.ev #ingest .card, html.ev #ingest .smallnote,
+  html.ev #install .codecard, html.ev #install .chiprow{opacity:0; transform:translateY(10px)}
+  html.ev #ingest.inview .card, html.ev #ingest.inview .smallnote,
+  html.ev #install.inview .codecard, html.ev #install.inview .chiprow{opacity:1; transform:none; transition:opacity .7s ease, transform .7s ease}
+  html.ev #ingest.inview .card:nth-child(2){transition-delay:.12s}
+  html.ev #ingest.inview .smallnote{transition-delay:.26s}
+  html.ev #install.inview .chiprow{transition-delay:.16s}
+</style>
+</head>
+<body>
+<div class="dots"></div>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="hero">
+  <div id="flood" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="dot"></span> HYDRADB HACKATHON · <b>TRACK 2</b> · LIVE CONTEXT FOR AGENTS</div>
+
+    <div class="hl">
+      <div class="swap" id="hl-flood">
+        <h1>Your agent loads 329 tools…<span class="l2" id="floodL2">…to send <em>one email.</em></span></h1>
+      </div>
+      <div class="swap hidden" id="hl-resolved">
+        <h1><span class="brand">Waypoint.</span><span class="pull">Agents pull only <span>what the task needs.</span></span></h1>
+      </div>
+    </div>
+
+    <div class="taskbar">
+      <div class="prompt"><span class="cursor">›</span><span class="txt">Email Acme Corp's March invoice to their finance contact</span></div>
+      <button id="routeBtn" type="button">Route it →</button>
+    </div>
+
+    <div id="pathstage">
+      <div id="pathrow"></div>
+      <div id="pathline"></div>
+      <div id="pathcap">THE OTHER <b>323 TOOLS</b> NEVER ENTER THE CONTEXT</div>
+    </div>
+
+    <div class="readout">
+      <span class="lbl">CONTEXT</span>
+      <span class="num" id="tokNum">27,000</span>
+      <span class="of" id="tokOf">tokens · 329 tools loaded</span>
+    </div>
+
+    <p class="subline">A <b>tool-routing graph</b> for agents, built on <b>HydraDB</b> — and it <b>learns from every outcome.</b></p>
+
+    <div class="ctas">
+      <!-- INTEGRATION: point this at the live console route when the site is served by app/server.py -->
+      <a class="btn primary" href="./console">Open the product →</a>
+      <a class="btn ghost" href="#race">See the evidence ↓</a>
+    </div>
+  </div>
+
+  <div class="scrollhint">SCROLL · THE EVIDENCE</div>
+</header>
+
+<main>
+  <!-- ================= 01 · THE RACE ================= -->
+  <section id="race">
+    <div class="kick">01 · THE RACE</div>
+    <h2>Same task. Three ways to load tools.</h2>
+    <p class="oneline">A vector store guesses similar tools. <b>A chain is not a similarity problem.</b></p>
+    <div class="bento">
+      <div class="card">
+        <div class="race">
+          <div class="racerow">
+            <div class="rname"><b>PRELOAD-ALL</b>the default today</div>
+            <div class="track"><div class="fill preload"></div></div>
+            <div class="rstat"><b>27,000</b> tok / task<br>chain “contained” — at full price</div>
+          </div>
+          <div class="racerow">
+            <div class="rname"><b>TF-IDF TOP-K</b>vector-style retrieval</div>
+            <div class="track"><div class="fill vector"></div></div>
+            <div class="rstat"><b>823</b> tok / task<br>full chain only <b>8/20</b></div>
+          </div>
+          <div class="racerow">
+            <div class="rname"><b>WAYPOINT GRAPH</b>traversal on HydraDB</div>
+            <div class="track"><div class="fill graph"></div></div>
+            <div class="rstat"><b>~254</b> tok / task<br><span class="win">full chain 20/20 · exact</span></div>
+          </div>
+        </div>
+        <div class="chiprow" style="margin-top:24px">
+          <span class="nchip">20 benchmark tasks · known chains</span>
+          <span class="nchip"><b>106×</b> fewer tokens than preload</span>
+          <span class="nchip dim">bars on a log scale — the gap is bigger than it looks</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 02 · IT LEARNS ================= -->
+  <section id="learns">
+    <div class="kick">02 · IT LEARNS</div>
+    <h2>The graph rewrites itself from outcomes.</h2>
+    <p class="oneline">Every outcome rewrites the graph's weights. <b>Failed chains lose their edges.</b></p>
+    <div class="bento learnwrap">
+      <div class="card">
+        <div class="clabel">TOP-CHAIN ACCURACY · 4 PASSES OVER THE SAME 20 TASKS</div>
+        <svg viewBox="0 0 720 340" width="100%" style="margin-top:14px" role="img" aria-label="Learning curves: version 1 falls from 0.40 to 0.35; version 2 rises from 0.85 to 0.95">
+          <!-- gridlines -->
+          <g stroke="rgba(255,255,255,.07)" stroke-width="1">
+            <line x1="64" y1="286" x2="688" y2="286"/>
+            <line x1="64" y1="218" x2="688" y2="218"/>
+            <line x1="64" y1="150" x2="688" y2="150"/>
+            <line x1="64" y1="82"  x2="688" y2="82"/>
+            <line x1="64" y1="14"  x2="688" y2="14"/>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="11" fill="#5d574c">
+            <text x="52" y="290" text-anchor="end">0</text>
+            <text x="52" y="222" text-anchor="end">.25</text>
+            <text x="52" y="154" text-anchor="end">.50</text>
+            <text x="52" y="86"  text-anchor="end">.75</text>
+            <text x="52" y="18"  text-anchor="end">1.0</text>
+            <text x="110" y="312" text-anchor="middle">pass 1</text>
+            <text x="298" y="312" text-anchor="middle">pass 2</text>
+            <text x="486" y="312" text-anchor="middle">pass 3</text>
+            <text x="664" y="312" text-anchor="middle">pass 4</text>
+          </g>
+          <!-- v1 grey: 0.40 0.35 0.35 0.35 -->
+          <polyline class="lv1" points="110,177.2 298,190.8 486,190.8 664,190.8" fill="none" stroke="#6e675b" stroke-width="2.5" stroke-dasharray="7 6"/>
+          <g class="lv1" fill="#0a0908" stroke="#6e675b" stroke-width="2.5">
+            <circle cx="110" cy="177.2" r="5"/><circle cx="298" cy="190.8" r="5"/><circle cx="486" cy="190.8" r="5"/><circle cx="664" cy="190.8" r="5"/>
+          </g>
+          <g class="lv1" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#8d8577">
+            <text x="110" y="160" text-anchor="middle">0.40</text>
+            <text x="664" y="216" text-anchor="middle">0.35</text>
+          </g>
+          <!-- v2 orange: 0.85 0.90 0.95 0.95 -->
+          <polyline class="lv2line" pathLength="1" points="110,54.8 298,41.2 486,27.6 664,27.6" fill="none" stroke="#ff4d00" stroke-width="3.5"/>
+          <g class="lv2dots" fill="#ff4d00">
+            <circle cx="110" cy="54.8" r="6"/><circle cx="298" cy="41.2" r="6"/><circle cx="486" cy="27.6" r="6"/><circle cx="664" cy="27.6" r="6"/>
+          </g>
+          <g class="lv2labs" font-family="JetBrains Mono, monospace" font-size="14" font-weight="700" fill="#ff4d00">
+            <text x="110" y="38" text-anchor="middle">0.85</text>
+            <text x="298" y="24" text-anchor="middle">0.90</text>
+            <text x="575" y="16" text-anchor="middle">0.95 → 0.95</text>
+          </g>
+        </svg>
+        <div class="chiprow" style="margin-top:8px">
+          <span class="nchip"><b>■</b> v2 · length-first ranking + outcome feedback</span>
+          <span class="nchip dim">- - v1 · weight-first — first attempt, failed, kept honest</span>
+        </div>
+      </div>
+      <div class="learnside">
+        <div class="card">
+          <div class="clabel">FIRST ATTEMPT · V1</div>
+          <div class="bignum" style="color:#8d8577">0.40 <small>→</small> 0.35</div>
+          <p>Weight-first ranking got captured by long detour chains. <b>We published the failure</b> — then fixed the rule, not the numbers.</p>
+        </div>
+        <div class="card">
+          <div class="clabel">WITH FEEDBACK · V2</div>
+          <div class="bignum orange">0.85 <small>→</small> 0.95</div>
+          <p>Success strengthens a chain's edges (+1); failure weakens them (−1). <b>One run, no tuning</b> — every move on the curve is explainable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 03 · IT HOLDS UP ================= -->
+  <section id="load">
+    <div class="kick">03 · IT HOLDS UP</div>
+    <h2>50 agents at once. It broke. Then it didn't.</h2>
+    <p class="oneline">The load test broke it. <b>The fix is in the architecture, not the excuses.</b></p>
+    <div class="bento">
+      <div class="vs">
+        <div class="vscard before">
+          <div class="clabel">BEFORE · NAIVE PER-CALL QUERIES</div>
+          <div class="vsstats">
+            <div class="vsstat"><div class="v">126</div><div class="k">ERRORS / 150 CALLS</div></div>
+            <div class="vsstat"><div class="v">0.61</div><div class="k">CALLS / SEC</div></div>
+          </div>
+        </div>
+        <div class="vsarrow">→</div>
+        <div class="vscard after">
+          <div class="clabel" style="color:var(--orange)">AFTER · SNAPSHOT CACHE + LIVE TRAVERSAL</div>
+          <div class="vsstats">
+            <div class="vsstat"><div class="v hot">0</div><div class="k">ERRORS / 150 CALLS</div></div>
+            <div class="vsstat"><div class="v">33.2</div><div class="k">CALLS / SEC</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="chiprow">
+        <span class="nchip">50 concurrent agents · 3 rounds each</span>
+        <span class="nchip"><b>54×</b> the throughput after the fix</span>
+        <span class="nchip dim">same box, same protocol — before and after both published</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 04 · YOUR TOOLS, YOUR GRAPH ================= -->
+  <section id="ingest">
+    <div class="kick">04 · YOUR TOOLS, YOUR GRAPH</div>
+    <h2>Point Waypoint at your MCP servers. It builds the graph itself.</h2>
+    <p class="oneline">No hand-built catalog. Ingestion reads your tool schemas and wires the graph — <b>proven live on the official reference servers.</b></p>
+    <div class="bento toolgrid">
+      <div class="card">
+        <div class="clabel">OFFICIAL MCP REFERENCE SERVER · INGESTED LIVE</div>
+        <div style="display:flex; align-items:baseline; gap:14px; margin-top:12px">
+          <span style="font-size:26px; font-weight:700">filesystem</span>
+          <span class="nchip"><b>14</b> tools</span>
+        </div>
+        <div class="chainrow">
+          <span class="tchip">read_file</span><span class="arr">→</span><span class="tchip">write_file</span>
+          <span class="nchip dim">a copy task, routed live · 230 tok</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="clabel">OFFICIAL MCP REFERENCE SERVER · INGESTED LIVE</div>
+        <div style="display:flex; align-items:baseline; gap:14px; margin-top:12px">
+          <span style="font-size:26px; font-weight:700">memory</span>
+          <span class="nchip"><b>9</b> tools</span>
+        </div>
+        <div class="chainrow">
+          <span class="tchip grey">search_nodes</span>
+          <span class="nchip dim">knowledge-graph lookup, routed live · 122 tok</span>
+        </div>
+      </div>
+    </div>
+    <div class="smallnote"><span class="x">✕ STOPPED</span> and a read-only role is stopped at <span class="mono" style="color:var(--dim)">write_file</span> — the graph knows who may call what.</div>
+  </section>
+
+  <!-- ================= 05 · INSTALL ================= -->
+  <section id="install">
+    <div class="kick">05 · INSTALL</div>
+    <h2>Ships as an MCP server.</h2>
+    <p class="oneline">Your agent connects in <b>one config block</b> — and holds three meta-tools instead of your whole catalog.</p>
+    <div class="bento">
+      <div class="codecard">
+        <div class="codehead"><span>MCP CLIENT CONFIG</span><button id="copyBtn" type="button">Copy</button></div>
+        <pre id="mcpCode"><span class="p">{</span>
+  <span class="k">"mcpServers"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="k">"waypoint"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="k">"command"</span><span class="p">:</span> <span class="s">"python3"</span><span class="p">,</span>
+      <span class="k">"args"</span><span class="p">:</span> <span class="p">[</span><span class="s">"app/mcp_server.py"</span><span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span></pre>
+      </div>
+      <div class="chiprow">
+        <span class="nchip"><b>find_tools</b> · the exact chain for the task</span>
+        <span class="nchip"><b>resolve_entity</b> · entities already known to the graph</span>
+        <span class="nchip"><b>report_outcome</b> · the write-back that makes it learn</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="signoff">Waypoint — agents pull only what the task needs.</div>
+  <div class="foot">
+    <span class="wm">WAYPOINT<sup>®</sup></span>
+    <span class="mid">Built on HydraDB · HydraDB Hackathon · Track 2 · Solo build</span>
+    <span class="nchip">pricing · <b>per 1M tool resolutions</b> · governance tier per seat</span>
+  </div>
+</footer>
+
+<script>
+"use strict";
+const TOOLS = ["find_charge", "issue_refund", "send_receipt", "chargeback_lookup", "create_customer", "list_invoices", "get_invoice", "invoice_pdf", "void_invoice", "lookup_customer", "find_contact", "find_deal", "update_deal", "send_email", "send_email_text", "search_mail", "archive_thread", "search_drive", "get_file", "share_file", "summarize_doc", "search_repo", "create_issue", "open_pr", "merge_pr", "invite_collaborator", "find_slot", "create_event", "cancel_event", "find_team", "post_message", "create_channel", "get_ticket", "escalate_ticket", "close_ticket", "create_employee", "assign_laptop", "book_onboarding", "translate_text", "ocr_scan", "sign_pdf", "refund_status_billing_payments", "backup_billing_payments_data", "export_sales_payments_report", "charge_report_sales_payments", "archive_vendor_payments_items", "notify_vendor_payments_team", "notify_partner_payments_team", "schedule_partner_payments_job", "charge_report_legacy_payments", "backup_legacy_payments_data", "receipt_template_mobile_payments", "charge_report_mobile_payments", "rotate_web_payments_keys", "audit_web_payments_log", "monitor_internal_payments_queue", "clean_internal_payments_duplicates", "sync_regional_payments_records", "export_regional_payments_report", "audit_trial_payments_log", "convert_trial_payments_format", "notify_enterprise_payments_team", "search_enterprise_payments_archive", "purge_retail_payments_cache", "export_retail_payments_report", "rotate_billing_crm_keys", "convert_billing_crm_format", "invoice_reminder_sales_crm", "refund_status_sales_crm", "invoice_reminder_vendor_crm", "rotate_vendor_crm_keys", "clean_partner_crm_duplicates", "notify_partner_crm_team", "import_legacy_crm_file", "monitor_legacy_crm_queue", "archive_mobile_crm_items", "email_campaign_mobile_crm", "export_web_crm_report", "contact_export_web_crm", "email_campaign_internal_crm", "validate_internal_crm_entry", "invoice_reminder_regional_crm", "clean_regional_crm_duplicates", "check_trial_crm_status", "archive_trial_crm_items", "schedule_enterprise_crm_job", "convert_enterprise_crm_format", "contact_export_retail_crm", "check_retail_crm_status", "backup_billing_mail_data", "audit_billing_mail_log", "fetch_sales_mail_metrics", "backup_sales_mail_data", "update_vendor_mail_settings", "purge_vendor_mail_cache", "archive_partner_mail_items", "email_campaign_partner_mail", "sync_legacy_mail_records", "charge_report_legacy_mail", "import_mobile_mail_file", "rotate_mobile_mail_keys", "backup_web_mail_data", "fetch_web_mail_metrics", "audit_internal_mail_log", "rotate_internal_mail_keys", "generate_regional_mail_summary", "refund_status_regional_mail", "purge_trial_mail_cache", "update_trial_mail_settings", "monitor_enterprise_mail_queue", "convert_enterprise_mail_format", "invoice_reminder_retail_mail", "audit_retail_mail_log", "sync_billing_drive_records", "receipt_template_billing_drive", "notify_sales_drive_team", "contact_export_sales_drive", "generate_vendor_drive_summary", "audit_vendor_drive_log", "notify_partner_drive_team", "backup_partner_drive_data", "fetch_legacy_drive_metrics", "archive_legacy_drive_items", "import_mobile_drive_file", "refund_status_mobile_drive", "update_web_drive_settings", "validate_web_drive_entry", "update_internal_drive_settings", "convert_internal_drive_format", "receipt_template_regional_drive", "archive_regional_drive_items", "invoice_reminder_trial_drive", "receipt_template_trial_drive", "refund_status_enterprise_drive", "audit_enterprise_drive_log", "purge_retail_drive_cache", "refund_status_retail_drive", "validate_billing_github_entry", "rotate_billing_github_keys", "charge_report_sales_github", "notify_sales_github_team", "validate_vendor_github_entry", "import_vendor_github_file", "fetch_partner_github_metrics", "archive_partner_github_items", "refund_status_legacy_github", "invoice_reminder_legacy_github", "rotate_mobile_github_keys", "notify_mobile_github_team", "receipt_template_web_github", "check_web_github_status", "contact_export_internal_github", "sync_internal_github_records", "notify_regional_github_team", "sync_regional_github_records", "email_campaign_trial_github", "check_trial_github_status", "fetch_enterprise_github_metrics", "archive_enterprise_github_items", "audit_retail_github_log", "convert_retail_github_format", "monitor_billing_calendar_queue", "invoice_reminder_billing_calendar", "check_sales_calendar_status", "convert_sales_calendar_format", "refund_status_vendor_calendar", "tag_vendor_calendar_record", "fetch_partner_calendar_metrics", "refund_status_partner_calendar", "import_legacy_calendar_file", "schedule_legacy_calendar_job", "archive_mobile_calendar_items", "schedule_mobile_calendar_job", "notify_web_calendar_team", "charge_report_web_calendar", "rotate_internal_calendar_keys", "archive_internal_calendar_items", "charge_report_regional_calendar", "monitor_regional_calendar_queue", "clean_trial_calendar_duplicates", "monitor_trial_calendar_queue", "fetch_enterprise_calendar_metrics", "update_enterprise_calendar_settings", "notify_retail_calendar_team", "schedule_retail_calendar_job", "search_billing_chat_archive", "tag_billing_chat_record", "audit_sales_chat_log", "contact_export_sales_chat", "sync_vendor_chat_records", "backup_vendor_chat_data", "schedule_partner_chat_job", "refund_status_partner_chat", "validate_legacy_chat_entry", "email_campaign_legacy_chat", "receipt_template_mobile_chat", "clean_mobile_chat_duplicates", "purge_web_chat_cache", "audit_web_chat_log", "fetch_internal_chat_metrics", "purge_internal_chat_cache", "import_regional_chat_file", "search_regional_chat_archive", "archive_trial_chat_items", "rotate_trial_chat_keys", "export_enterprise_chat_report", "receipt_template_enterprise_chat", "charge_report_retail_chat", "backup_retail_chat_data", "receipt_template_billing_support", "rotate_billing_support_keys", "contact_export_sales_support", "archive_sales_support_items", "contact_export_vendor_support", "refund_status_vendor_support", "check_partner_support_status", "backup_partner_support_data", "generate_legacy_support_summary", "clean_legacy_support_duplicates", "validate_mobile_support_entry", "import_mobile_support_file", "export_web_support_report", "charge_report_web_support", "charge_report_internal_support", "archive_internal_support_items", "search_regional_support_archive", "contact_export_regional_support", "validate_trial_support_entry", "search_trial_support_archive", "backup_enterprise_support_data", "refund_status_enterprise_support", "generate_retail_support_summary", "refund_status_retail_support", "search_billing_hr_archive", "purge_billing_hr_cache", "convert_sales_hr_format", "schedule_sales_hr_job", "update_vendor_hr_settings", "contact_export_vendor_hr", "validate_partner_hr_entry", "rotate_partner_hr_keys", "contact_export_legacy_hr", "search_legacy_hr_archive", "export_mobile_hr_report", "purge_mobile_hr_cache", "check_web_hr_status", "tag_web_hr_record", "export_internal_hr_report", "backup_internal_hr_data", "update_regional_hr_settings", "email_campaign_regional_hr", "generate_trial_hr_summary", "notify_trial_hr_team", "sync_enterprise_hr_records", "notify_enterprise_hr_team", "monitor_retail_hr_queue", "audit_retail_hr_log", "audit_billing_misc_log", "charge_report_billing_misc", "tag_sales_misc_record", "audit_sales_misc_log", "contact_export_vendor_misc", "rotate_vendor_misc_keys", "contact_export_partner_misc", "schedule_partner_misc_job", "schedule_legacy_misc_job", "receipt_template_legacy_misc", "tag_mobile_misc_record", "rotate_mobile_misc_keys", "validate_web_misc_entry", "archive_web_misc_items", "search_internal_misc_archive", "purge_internal_misc_cache", "clean_regional_misc_duplicates", "convert_regional_misc_format", "rotate_trial_misc_keys", "contact_export_trial_misc", "charge_report_enterprise_misc", "invoice_reminder_enterprise_misc", "convert_retail_misc_format", "invoice_reminder_retail_misc", "generate_billing_analytics_summary", "fetch_billing_analytics_metrics", "receipt_template_sales_analytics", "refund_status_sales_analytics", "update_vendor_analytics_settings", "import_vendor_analytics_file", "search_partner_analytics_archive", "import_partner_analytics_file", "backup_legacy_analytics_data", "notify_legacy_analytics_team", "notify_mobile_analytics_team", "audit_mobile_analytics_log", "check_web_analytics_status", "export_web_analytics_report", "monitor_internal_analytics_queue", "rotate_internal_analytics_keys", "notify_regional_analytics_team", "monitor_regional_analytics_queue", "notify_trial_analytics_team", "export_trial_analytics_report", "audit_enterprise_analytics_log", "invoice_reminder_enterprise_analytics", "refund_status_retail_analytics", "sync_retail_analytics_records", "notify_billing_ops_team", "audit_billing_ops_log", "sync_sales_ops_records", "check_sales_ops_status", "audit_vendor_ops_log", "search_vendor_ops_archive", "notify_partner_ops_team", "archive_partner_ops_items", "receipt_template_legacy_ops", "tag_legacy_ops_record", "convert_mobile_ops_format", "rotate_mobile_ops_keys", "schedule_web_ops_job", "charge_report_web_ops", "monitor_internal_ops_queue", "tag_internal_ops_record", "notify_regional_ops_team", "email_campaign_regional_ops", "tag_trial_ops_record", "email_campaign_trial_ops", "clean_enterprise_ops_duplicates", "convert_enterprise_ops_format", "backup_retail_ops_data", "receipt_template_retail_ops"];
+const CHAIN = ["lookup_customer","list_invoices","get_invoice","invoice_pdf","find_contact","send_email"];
+const TOK_START = 27000, TOK_END = 494;
+const $ = s => document.querySelector(s);
+const floodEl = $("#flood"), stageEl = $("#pathstage"), lineEl = $("#pathline");
+const numEl = $("#tokNum"), ofEl = $("#tokOf"), btn = $("#routeBtn");
+const params = new URLSearchParams(location.search);
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const wantState = params.get("state");
+let routed = false, routing = false;
+let routeGen = 0;
+
+/* ---------- build the flood ---------- */
+const chainEls = {};
+function buildFlood(){
+  const frag = document.createDocumentFragment();
+  for(const name of TOOLS){
+    const c = document.createElement("span");
+    c.className = "chip";
+    c.textContent = name;
+    c.style.setProperty("--dx", (Math.random()*10-5).toFixed(1)+"px");
+    c.style.setProperty("--dy", (Math.random()*10-5).toFixed(1)+"px");
+    c.style.setProperty("--dur", (5+Math.random()*6).toFixed(1)+"s");
+    c.style.setProperty("--del", (-Math.random()*8).toFixed(1)+"s");
+    const ci = CHAIN.indexOf(name);
+    if(ci >= 0){ c.classList.add("chain"); c.dataset.chain = ci; chainEls[ci] = c; }
+    frag.appendChild(c);
+  }
+  floodEl.appendChild(frag);
+}
+buildFlood();
+
+/* ---------- counter ---------- */
+function fmt(n){ return Math.round(n).toLocaleString("en-US"); }
+let tickGen = 0;
+function tickCounter(from, to, dur, snap){
+  const id = ++tickGen;
+  if(snap){ numEl.textContent = fmt(to); return; }
+  const t0 = performance.now();
+  let last = null;
+  (function step(t){
+    if(id !== tickGen) return;
+    const p = Math.min(1, (t - t0) / dur);
+    const e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+    /* Phase 15 perf: write to the DOM only when the displayed value
+       actually changes — the readout's layout is not invalidated on
+       frames where the rounded number is identical. */
+    const s = fmt(from + (to - from) * e);
+    if(s !== last){ last = s; numEl.textContent = s; }
+    if(p < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+/* ---------- the routing moment: one continuous melt ---------- */
+function route(snap){
+  if(routing || routed) return;
+  cancelDwell();
+  const gen = ++routeGen;
+  routing = true;
+  btn.disabled = true; btn.textContent = "Routing…";
+  if(snap) document.documentElement.classList.add("snap");
+  document.body.classList.add("routed");
+  const chips = CHAIN.map((_, i) => chainEls[i]);
+
+  if(snap){
+    /* deterministic end-state: flood gone, headline swapped, path in-flow */
+    for(const el of floodEl.children){
+      if(!el.classList.contains("chain")){
+        el.style.transitionDelay = "0s";
+        el.classList.add("gone");
+      }
+    }
+    $("#hl-flood").classList.add("hidden");
+    $("#hl-resolved").classList.remove("hidden");
+    document.body.classList.add("snaproute");
+    document.body.classList.add("landed");
+    chips.forEach(el => { el.classList.add("gone"); el.style.visibility = "hidden"; });
+    const pr = $("#pathrow");
+    pr.innerHTML = "";
+    for(const name of CHAIN){
+      const s = document.createElement("span");
+      s.className = "chip chain lit";
+      s.textContent = name;
+      pr.appendChild(s);
+    }
+    tickCounter(TOK_START, TOK_END, 0, true);
+    ofEl.textContent = "tokens · 6 tools loaded";
+    routed = true; routing = false;
+    btn.disabled = false; btn.textContent = "Route it again ↺";
+    /* snap stays ON: removing it would re-enable transitions and let a
+       late frame catch the flood mid-fade. reset() removes it instead. */
+    return;
+  }
+
+  /* ============ THE MELT — no cut, no static pause ============
+     The tide goes out in staggered waves while the counter falls and
+     the resolved headline dissolves in; the six survivors light up
+     inside the flood, then glide home and settle into the path row. */
+
+  /* 1 · headline crossfade — a slow dissolve, starting just into the melt.
+     visibility is forced on for the outgoing block so it truly fades
+     instead of popping out (the .hidden class sets visibility:hidden). */
+  const hf = $("#hl-flood"), hr = $("#hl-resolved");
+  hf.style.transition = "opacity 2.2s ease, transform 2.2s ease";
+  hr.style.transition = "opacity 2.2s ease, transform 2.2s ease";
+  setTimeout(() => {
+    if(gen !== routeGen) return;
+    hf.style.visibility = "visible";
+    hf.classList.add("hidden");
+    hr.classList.remove("hidden");
+  }, 400);
+
+  /* 2 · the tide goes out — recession staggered by position:
+     chips at the edges recede first, the centre lingers last */
+  const heroR = $("#hero").getBoundingClientRect();
+  const cx = heroR.left + heroR.width / 2, cy = heroR.top + heroR.height / 2;
+  const items = [];
+  let maxD = 1;
+  for(const el of floodEl.children){
+    if(el.classList.contains("chain")) continue;
+    const r = el.getBoundingClientRect();
+    const d = Math.hypot(r.left + r.width / 2 - cx, r.top + r.height / 2 - cy);
+    items.push([el, d]);
+    if(d > maxD) maxD = d;
+  }
+  for(const [el, d] of items){
+    /* Phase 15 perf: same ~3.4s melt envelope, but a wider delay spread
+       (0–2.05s) with a shorter per-chip fade (1.3s) — peak concurrent
+       transitions drop from ~290 to ~205 while the tide character
+       (edges first, centre last) is unchanged. */
+    el.style.transitionDuration = "1.3s";
+    el.style.transitionDelay = ((1 - d / maxD) * 1.9 + Math.random() * 0.15).toFixed(2) + "s";
+    el.classList.add("gone");
+  }
+
+  /* 3 · the six survivors light up, one by one, still inside the flood */
+  chips.forEach((el, i) => setTimeout(() => {
+    if(gen === routeGen) el.classList.add("lit");
+  }, 500 + i * 200));
+
+  /* 4 · the counter falls across the whole melt */
+  tickCounter(TOK_START, TOK_END, 3500, false);
+  setTimeout(() => { if(gen === routeGen) ofEl.textContent = "tokens · 6 tools loaded"; }, 3300);
+
+  /* 5 · then they glide home (FLIP) */
+  setTimeout(() => { if(gen === routeGen) glideChips(chips); }, 1700);
+
+  /* 6 · settle: hand the chips to the in-flow path row (the same end
+     state snap mode renders) and drop the fixed copies — position:fixed
+     must not outlive the animation (Phase 13) */
+  setTimeout(() => {
+    if(gen !== routeGen) return;
+    settleChips(chips);
+    document.body.classList.add("landed");
+  }, 3300);
+
+  /* 7 · flow complete */
+  setTimeout(() => {
+    if(gen !== routeGen) return;
+    routed = true; routing = false;
+    btn.disabled = false; btn.textContent = "Route it again ↺";
+  }, 3500);
+}
+
+/* FLIP glide: measure the lit survivors where they sit in the flood and
+   fly them into the path line above the stage */
+function glideChips(chips){
+  /* glide them out of the flood into the path (FLIP) */
+  const rects = chips.map(el => el.getBoundingClientRect());
+  const stage = stageEl.getBoundingClientRect();
+  const gap = 40;
+  const totalW = rects.reduce((a, r) => a + r.width, 0) + gap * (chips.length - 1);
+  let x = (window.innerWidth - totalW) / 2;
+  const y = stage.top + 8;
+  const targets = rects.map(r => { const tx = x; x += r.width + gap; return { x: tx, y }; });
+
+  chips.forEach((el, i) => {
+    const r = rects[i];
+    /* Phase 15 perf: will-change lives only on these 6 chips, only for
+       the glide — settleChips() removes the elements (and with them the
+       hint); reset()'s cssText reset clears it on replay. */
+    el.style.willChange = "transform";
+    el.style.position = "fixed";
+    el.style.left = r.left + "px"; el.style.top = r.top + "px";
+    el.style.width = r.width + "px"; el.style.margin = "0"; el.style.zIndex = 40;
+    document.body.appendChild(el);
+  });
+  /* connecting line, centred on the chips */
+  const first = targets[0], last = targets[chips.length - 1];
+  const firstW = rects[0].width, lastW = rects[chips.length - 1].width;
+  const chipH = rects[0].height;
+  lineEl.style.left = (first.x + firstW / 2) + "px";
+  lineEl.style.top = (y + chipH / 2 - stage.top - 1) + "px";
+  lineEl.style.width = ((last.x + lastW / 2) - (first.x + firstW / 2)) + "px";
+  document.body.classList.add("lining");
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    chips.forEach((el, i) => {
+      const r = rects[i];
+      el.style.transition =
+        "transform 1.4s cubic-bezier(.22,.9,.26,1) " + (i * 0.06) + "s, background .35s ease, color .35s ease, box-shadow .35s ease";
+      el.style.transform = "translate(" + (targets[i].x - r.left) + "px," + (targets[i].y - r.top) + "px)";
+    });
+  }));
+}
+
+/* settle: render the path in-flow (snap mode's end state) and remove
+   the fixed gliding copies from the DOM */
+function settleChips(chips){
+  const pr = $("#pathrow");
+  pr.innerHTML = "";
+  for(const name of CHAIN){
+    const s = document.createElement("span");
+    s.className = "chip chain lit";
+    s.textContent = name;
+    pr.appendChild(s);
+  }
+  document.body.classList.add("snaproute");
+  chips.forEach(el => el.remove());
+}
+
+/* ---------- reset (replay) ---------- */
+function reset(){
+  if(routing) return;
+  routeGen++;
+  tickGen++;
+  cancelDwell();
+  document.documentElement.classList.remove("snap");
+  document.body.classList.remove("routed");
+  document.body.classList.remove("snaproute");
+  document.body.classList.remove("lining");
+  document.body.classList.remove("landed");
+  $("#pathrow").innerHTML = "";
+  for(const el of floodEl.querySelectorAll(".gone")){ el.classList.remove("gone"); el.style.transitionDelay = "0s"; el.style.transitionDuration = ""; }
+  CHAIN.forEach((_, i) => {
+    const el = chainEls[i];
+    el.classList.remove("lit");
+    el.style.cssText = "";
+    el.style.setProperty("--dx", (Math.random()*10-5).toFixed(1)+"px");
+    el.style.setProperty("--dy", (Math.random()*10-5).toFixed(1)+"px");
+    el.style.setProperty("--dur", (5+Math.random()*6).toFixed(1)+"s");
+    floodEl.appendChild(el);
+  });
+  /* restore original flood order */
+  const order = new Map(TOOLS.map((n, i) => [n, i]));
+  [...floodEl.children].sort((a, b) => order.get(a.textContent) - order.get(b.textContent)).forEach(el => floodEl.appendChild(el));
+  const hfEl = $("#hl-flood"), hrEl = $("#hl-resolved");
+  hrEl.classList.add("hidden");
+  hfEl.classList.remove("hidden");
+  hfEl.style.transition = ""; hfEl.style.visibility = "";
+  hrEl.style.transition = "";
+  numEl.textContent = fmt(TOK_START);
+  ofEl.textContent = "tokens · 329 tools loaded";
+  routed = false;
+  btn.textContent = "Route it →";
+}
+
+/* ---------- stage A hold ----------
+   The flood opens the show and holds for DWELL_MS so the frame can be
+   read, then the melt begins on its own — one continuous flow, no
+   observer pauses. Clicking Route it skips straight into the melt. */
+const DWELL_MS = 1400;
+let dwellTimer = null;
+function scheduleAuto(){
+  clearTimeout(dwellTimer);
+  dwellTimer = setTimeout(() => { dwellTimer = null; route(false); }, DWELL_MS);
+}
+function cancelDwell(){ clearTimeout(dwellTimer); dwellTimer = null; }
+
+btn.addEventListener("click", () => {
+  if(routing) return;
+  if(routed){ reset(); scheduleAuto(); }
+  else route(false);
+});
+
+/* ---------- copy button (the nmemo move) ---------- */
+const SNIPPET = '{\n  "mcpServers": {\n    "waypoint": {\n      "command": "python3",\n      "args": ["app/mcp_server.py"]\n    }\n  }\n}';
+$("#copyBtn").addEventListener("click", async ev => {
+  const b = ev.currentTarget;
+  try{ await navigator.clipboard.writeText(SNIPPET); }
+  catch(e){
+    const ta = document.createElement("textarea");
+    ta.value = SNIPPET; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(_){}
+    ta.remove();
+  }
+  b.textContent = "Copied ✓"; b.classList.add("copied");
+  setTimeout(() => { b.textContent = "Copy"; b.classList.remove("copied"); }, 1700);
+});
+
+/* ---------- entry state ---------- */
+/* ?state= modes are for screenshots: freeze all motion so the first frame is final */
+const shotMode = wantState === "flood" || wantState === "resolved";
+if(shotMode) document.documentElement.classList.add("snap");
+function start(){
+  if(wantState === "resolved" || reduced){
+    route(true);
+  } else if(wantState === "flood"){
+    $("#floodL2").classList.add("show");
+  } else {
+    setTimeout(() => $("#floodL2").classList.add("show"), 300);
+    scheduleAuto();
+  }
+}
+/* measure only after webfonts land — a late font swap shifts the headline
+   and would strand the gliding chips at stale coordinates */
+if(document.fonts && document.fonts.ready){
+  Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1200))])
+    .then(() => requestAnimationFrame(() => requestAnimationFrame(start)));
+} else {
+  requestAnimationFrame(() => requestAnimationFrame(start));
+}
+</script>
+
+<script>
+/* ================= PHASE 17 — evidence sections come alive =================
+   Scroll-triggered, fire-once animation for the five sections below the
+   hero. Every animation ends on exactly the value the page prints
+   statically: counters are parsed FROM the live DOM text, and each
+   counter's final frame writes its original string back — a settled page
+   is identical to the pre-animation one. If this can't run (no
+   IntersectionObserver, prefers-reduced-motion, ?state= shot mode) the
+   html.ev class is never added, no CSS pre-state applies, and the page
+   renders final-state exactly as before this phase. The hero script
+   above is untouched; this block reads nothing from it. */
+(function(){
+  "use strict";
+  var reduced17 = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var state17 = new URLSearchParams(location.search).get("state");
+  if(reduced17 || state17 === "flood" || state17 === "resolved" || !("IntersectionObserver" in window)) return;
+  document.documentElement.classList.add("ev");
+
+  function easeOut(p){ return 1 - Math.pow(1 - p, 3); }
+
+  /* One counter: from -> to over dur ms, starting after delay ms.
+     The start value is written synchronously at arm time (the section
+     has just been revealed; its CSS state is still at frame zero), the
+     DOM is written only when the displayed string changes (Phase 15),
+     and the last frame restores the element's exact original text. */
+  function count(el, from, to, delay, dur, fmt){
+    var original = el.textContent;
+    el.textContent = fmt(from);
+    var last = el.textContent, t0 = null;
+    function step(t){
+      if(t0 === null) t0 = t;
+      var p = (t - t0 - delay) / dur;
+      if(p >= 1){ el.textContent = original; return; }
+      if(p > 0){
+        var s = fmt(from + (to - from) * easeOut(p));
+        if(s !== last){ last = s; el.textContent = s; }
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  function fmtInt(n){ return Math.round(n).toLocaleString("en-US"); }
+  function fmtDec(d){ return function(n){ return n.toFixed(d); }; }
+
+  /* 01 · THE RACE — each row's headline number ticks up in step with its
+     bar (same 150ms stagger, same 1.2s). Target, prefix and comma style
+     are read from the printed text itself, so it cannot drift. Only the
+     first <b> of each stat is the counter — the "8/20" inside the
+     vector row's sentence is never touched. */
+  function armRace(sec){
+    sec.querySelectorAll(".racerow").forEach(function(row, i){
+      var b = row.querySelector(".rstat b");
+      if(!b) return;
+      var orig = b.textContent;
+      var prefix = orig.match(/^\D*/)[0];
+      var target = parseFloat(orig.replace(/[^0-9.]/g, ""));
+      var comma = orig.indexOf(",") >= 0;
+      count(b, 0, target, i * 150, 1200, function(n){
+        return prefix + (comma ? fmtInt(n) : String(Math.round(n)));
+      });
+    });
+  }
+
+  /* 03 · IT HOLDS UP — BEFORE counts up to its printed breakage; AFTER
+     counts errors DOWN from that same 126 to its printed 0 while
+     throughput climbs to its printed 33.2. The section prints no
+     latency figures, so none are animated. */
+  function armLoad(sec){
+    var v = sec.querySelectorAll(".vsstat .v");
+    if(v.length < 4) return;
+    count(v[0], 0, 126, 100, 800, fmtInt);        /* 126 errors / 150 calls */
+    count(v[1], 0, 0.61, 100, 800, fmtDec(2));    /* 0.61 calls / sec */
+    count(v[2], 126, 0, 700, 1100, fmtInt);       /* errors: 126 -> 0 */
+    count(v[3], 0, 33.2, 700, 1100, fmtDec(1));   /* throughput -> 33.2 */
+  }
+
+  var armed = { race: armRace, load: armLoad };
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if(!en.isIntersecting) return;
+      var sec = en.target;
+      io.unobserve(sec);                 /* fire once */
+      sec.classList.add("inview");
+      if(armed[sec.id]) armed[sec.id](sec);
+    });
+  }, { threshold: 0.35 });
+  ["race", "learns", "load", "ingest", "install"].forEach(function(id){
+    var sec = document.getElementById(id);
+    if(sec) io.observe(sec);
+  });
+})();
+</script>
+</body>
+</html>

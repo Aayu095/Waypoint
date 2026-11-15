@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WAYPOINT — Agents pull only what the task needs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0908; --panel:#100e0b; --panel2:#15120e; --line:rgba(255,255,255,.08);
+  --line2:rgba(255,255,255,.16); --ink:#ece7dd; --dim:#a89e8b; --faint:#6f675a;
+  --org:#ff4d00; --red:#ff3d2e; --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --disp:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--mono); font-size:12px;
+  background-image:radial-gradient(rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size:22px 22px;
+  display:flex; flex-direction:column; overflow:hidden;
+  padding:19px 24px;
+}
+::-webkit-scrollbar{width:8px;height:8px} ::-webkit-scrollbar-thumb{background:#2a251e;border-radius:4px}
+.micro{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.org{color:var(--org)} .dim{color:var(--dim)} .hidden{display:none !important}
+
+/* ---------- top bar ---------- */
+#topbar{flex:0 0 50px;display:flex;align-items:center;gap:18px;padding:0 18px;
+  border:1px solid var(--line);background:rgba(13,11,9,.92)}
+#wordmark{font-family:var(--disp);font-weight:700;font-size:21px;letter-spacing:.04em;white-space:nowrap}
+#wordmark sup{color:var(--org);font-size:11px}
+#tagline{font-size:10.5px;color:var(--dim);white-space:nowrap}
+#chips{margin-left:auto;display:flex;gap:8px;flex-wrap:nowrap;overflow:hidden}
+.chip{border:1px solid var(--line);background:var(--panel);padding:6px 10px;font-size:10.5px;white-space:nowrap}
+.chip b{color:var(--org);font-weight:700}
+.chip span{color:var(--faint);letter-spacing:.08em;font-size:9px;text-transform:uppercase;margin-right:5px}
+
+/* ---------- shell ---------- */
+#shell{flex:1;display:flex;min-height:0;border:1px solid var(--line);border-top:none}
+#navrail{flex:0 0 88px;border-right:1px solid var(--line);background:rgba(13,11,9,.92);
+  display:flex;flex-direction:column;padding:14px 10px;gap:10px}
+.navbtn{border:1px solid var(--line);background:transparent;color:var(--dim);font-family:var(--mono);
+  padding:10px 8px 8px;cursor:pointer;text-align:left}
+.navbtn .nl{display:block;font-size:11px;font-weight:700;letter-spacing:.12em}
+.navbtn .ns{display:block;font-size:8.5px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+.navbtn:hover{color:var(--ink);border-color:var(--faint)}
+.navbtn.sel{border-color:var(--org);color:var(--ink);background:#1c1008}
+.navbtn.sel .nl{color:var(--org)}
+#navfoot{margin-top:auto;font-size:8.5px;color:var(--faint);line-height:1.6;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- composer ---------- */
+#composer{width:302px;flex:0 0 302px;border-right:1px solid var(--line);display:flex;flex-direction:column;background:rgba(13,11,9,.85)}
+.panehead{padding:11px 16px 9px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:8px}
+.panehead .no{color:var(--org);font-weight:700;font-size:10px}
+.panehead h2{font-family:var(--disp);font-size:13px;font-weight:700;letter-spacing:.06em}
+#tasks{flex:1;overflow-y:auto;min-height:0}
+.trow{display:flex;align-items:flex-start;gap:8px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);
+  cursor:pointer;border-left:2px solid transparent}
+.trow:hover{background:var(--panel2)}
+.trow.sel{background:var(--panel2);border-left-color:var(--org)}
+.trow .tid{color:var(--org);font-weight:700;font-size:10.5px;flex:0 0 26px;padding-top:1px}
+.trow .ttx{flex:1;color:var(--dim);font-size:11px;line-height:1.45}
+.trow.sel .ttx{color:var(--ink)}
+.trow .badge{flex:0 0 auto;border:1px solid var(--line2);color:var(--dim);font-size:9.5px;padding:1px 5px;margin-top:1px}
+.trow .badge b{color:var(--ink)}
+#rolebox{border-top:1px solid var(--line);padding:14px 16px}
+#pills{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 12px}
+.pill{border:1px solid var(--line2);background:transparent;color:var(--dim);font-family:var(--mono);
+  font-size:10px;padding:5px 9px;cursor:pointer}
+.pill:hover{color:var(--ink);border-color:var(--faint)}
+.pill.sel{background:var(--ink);color:#0a0908;border-color:var(--ink);font-weight:700}
+#runbtn{width:100%;background:var(--org);color:#fff;border:none;font-family:var(--mono);font-weight:700;
+  font-size:13px;letter-spacing:.1em;padding:12px;cursor:pointer}
+#runbtn:hover{background:#ff5f1a} #runbtn:disabled{background:#5a2a12;color:#a89e8b;cursor:wait}
+#runnote{margin-top:9px;font-size:9.5px;color:var(--faint);line-height:1.5}
+
+/* ---------- views ---------- */
+.view{flex:1;display:flex;min-width:0;min-height:0}
+
+/* ===== RUN view ===== */
+#view-run{flex-direction:column}
+#stage{flex:1;display:flex;gap:18px;padding:18px 18px 11px;min-height:0}
+.wincol{flex:1;display:flex;flex-direction:column;border:1px solid var(--line);background:rgba(16,14,11,.88);min-width:0}
+.winhead{display:flex;align-items:baseline;gap:8px;padding:11px 16px 9px;border-bottom:1px solid var(--line)}
+.winhead .wt{font-size:10.5px;letter-spacing:.12em;color:var(--dim);font-weight:700}
+.winhead .wt b{color:var(--ink)}
+.winhead .wt.orgt b{color:var(--org)}
+.winhead .micro{margin-left:auto}
+.winframe{flex:1;overflow:hidden;padding:11px;position:relative;min-height:0}
+.winfoot{border-top:1px solid var(--line);padding:11px 16px}
+.tokbar{height:11px;background:var(--panel2);border:1px solid var(--line);position:relative}
+.tokfill{position:absolute;inset:0;width:0;transition:width .5s ease}
+.tokfill.flood{background:#7a3b26}
+.tokfill.org{background:var(--org)}
+.winstat{display:flex;align-items:baseline;gap:10px;margin-top:8px}
+.winstat .n{font-size:12px;color:var(--ink);font-weight:700;white-space:nowrap}
+.winstat .s{font-size:10px;color:var(--faint);line-height:1.45}
+#floodbox{display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start}
+.fchip{border:1px solid var(--line);background:var(--panel2);color:var(--dim);font-size:9.5px;padding:3px 6px;white-space:nowrap}
+.fchip.dist{border-style:dashed;color:var(--faint);background:transparent}
+.fchip.more{border-color:var(--org);color:var(--org);font-weight:700}
+#routed-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:var(--faint);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.tcard{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);background:var(--panel2);
+  padding:6px 11px;margin-bottom:4px;animation:cardin .28s ease}
+@keyframes cardin{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.tcard .step{flex:0 0 18px;height:18px;border:1px solid var(--line2);color:var(--faint);font-size:9.5px;
+  display:flex;align-items:center;justify-content:center}
+.tcard .tn{flex:1;font-size:12.5px;color:var(--ink);font-weight:500}
+.tcard .tm{font-size:9.5px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;text-align:right}
+.tcard .tm b{display:block;color:var(--dim);font-size:11px;letter-spacing:0;text-transform:none}
+.tcard.blocked{border-color:var(--red);background:#2a0d08}
+.tcard.blocked .tn{color:#ff9d94}
+.ckpt{flex:0 0 auto;background:var(--org);color:#fff;font-size:9px;font-weight:700;letter-spacing:.1em;padding:3px 7px}
+#savewrap{margin-left:auto;text-align:right}
+#savepct{font-family:var(--disp);font-size:39px;font-weight:700;color:var(--org);line-height:.95;white-space:nowrap}
+#savepct small{display:block;font-family:var(--mono);font-size:9px;color:var(--faint);letter-spacing:.14em;margin-top:3px;font-weight:400}
+#resultstrip{flex:0 0 auto;display:flex;align-items:center;gap:18px;margin:0 18px;
+  border:1px solid var(--line);background:rgba(13,11,9,.92);padding:12px 16px}
+#result-line{font-family:var(--disp);font-size:16.5px;font-weight:500;color:var(--ink);line-height:1.3}
+#result-line.stop{color:#ff9d94}
+#result-stats{margin-left:auto;font-size:10.5px;color:var(--dim);white-space:nowrap;text-align:right;line-height:1.6}
+#result-stats b{color:var(--org)}
+#strips{flex:0 0 120px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:13px 18px}
+.strip{border:1px solid var(--line);background:rgba(13,11,9,.92);padding:12px 15px;overflow:hidden}
+.strip h3{font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;font-weight:500;margin-bottom:8px}
+.strip h3 b{color:var(--org)}
+.spill{display:inline-block;border:1px solid var(--line2);padding:4px 8px;font-size:10.5px;color:var(--dim);margin:0 5px 5px 0}
+.spill b{color:var(--ink)} .spill .org{font-weight:700}
+
+/* ===== LIVE AGENT FEED (RUN view): external calls via the MCP server ===== */
+#agentfeed{flex:0 0 auto;margin:0 18px 18px;border:1px solid var(--line);background:rgba(13,11,9,.92);padding:11px 16px 10px}
+#agentfeed .afhead{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+#agentfeed h3{font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;font-weight:500}
+#agentfeed h3 b{color:var(--org)}
+#agentfeed .afsub{margin-left:auto;font-size:9.5px;color:var(--faint);letter-spacing:.08em;text-transform:uppercase}
+.afrow{display:flex;gap:10px;align-items:baseline;padding:4px 0;border-top:1px solid rgba(255,255,255,.04);
+  font-size:11px;line-height:1.5;white-space:nowrap;overflow:hidden}
+.afrow .aft{color:var(--faint);flex:0 0 60px}
+.afrow .aftool{color:var(--org);font-weight:700;flex:0 0 116px}
+.afrow .afbody{color:var(--dim);overflow:hidden;text-overflow:ellipsis}
+.afrow .afbody b{color:var(--ink);font-weight:500}
+.afrow .afref{color:#ff9d94}
+#afempty{color:var(--faint);font-size:11px;padding:2px 0 4px}
+.stripflex{display:flex;gap:12px;align-items:center}
+.stripflex .nums{font-family:var(--disp);font-size:21px;font-weight:700;color:var(--ink);white-space:nowrap}
+.stripflex .nums .org{color:var(--org)}
+
+/* ===== GRAPH view ===== */
+#graphcol{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0}
+#rail-right{width:326px;flex:0 0 326px;border-left:1px solid var(--line);display:flex;flex-direction:column;background:rgba(13,11,9,.85);overflow-y:auto}
+#graphwrap{flex:1;position:relative;min-height:0;overflow:hidden}
+#graph{position:absolute;inset:0;width:100%;height:100%}
+#graphlegend{position:absolute;top:12px;right:14px;display:flex;gap:12px;font-size:9.5px;color:var(--faint);z-index:3}
+#graphlegend i{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+.lg-tool{border:1px solid var(--line2);background:var(--panel2)}
+.lg-type{background:var(--dim)}
+.lg-lit{background:var(--org)}
+.edge{fill:none;stroke:rgba(255,255,255,.10);stroke-width:1}
+.edge.hl{stroke:rgba(255,255,255,.45)}
+.edge.lit{stroke:var(--org);stroke-width:1.6}
+.edge.blocked-edge{stroke:var(--red);stroke-width:1.6;stroke-dasharray:4 3}
+.node text{font-family:var(--mono);pointer-events:none}
+.tool rect{fill:var(--panel2);stroke:var(--line2);stroke-width:1}
+.tool text{fill:var(--dim);font-size:9.5px}
+.tool:hover rect{stroke:var(--faint)} .tool:hover text{fill:var(--ink)}
+.tool.hl rect{stroke:var(--faint)} .tool.hl text{fill:var(--ink)}
+.tool.lit rect{fill:#2a1408;stroke:var(--org)} .tool.lit text{fill:#ffb894}
+.type rect{fill:var(--dim)}
+.type text{fill:var(--faint);font-size:9.5px}
+.type.hl text{fill:var(--ink)} .type.hl rect{fill:var(--ink)}
+.type.lit rect{fill:var(--org)} .type.lit text{fill:var(--org)}
+.type.supplied rect{fill:transparent;stroke:var(--org);stroke-dasharray:3 2}
+.tool.blocked rect{fill:#2a0d08;stroke:var(--red);stroke-width:1.6}
+.tool.blocked text{fill:#ff9d94}
+.xbadge circle{fill:var(--red)}
+.pulse{fill:var(--org)}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-3px)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+.shake{animation:shake .45s ease-in-out 2}
+@keyframes ringpulse{0%{opacity:.9;r:6}100%{opacity:0;r:20}}
+.ring{fill:none;stroke:var(--org);stroke-width:1.5;animation:ringpulse .6s ease-out forwards}
+#chainbox{border-top:1px solid var(--line);padding:12px 16px 8px;background:rgba(13,11,9,.85)}
+#chain{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:24px;margin-top:5px}
+.cchip{border:1px solid var(--line2);background:var(--panel2);padding:4px 8px;font-size:11px;color:var(--dim)}
+.cchip.lit{border-color:var(--org);color:#ffb894;background:#2a1408}
+.cchip.blocked{border-color:var(--red);color:#ff9d94;background:#2a0d08}
+.cchip.after{opacity:.35}
+.carr{color:var(--org);font-size:11px}
+#meterbox{display:flex;gap:22px;align-items:flex-end;padding:10px 16px 14px;background:rgba(13,11,9,.85)}
+#bigsave{font-family:var(--disp);font-size:40px;font-weight:700;color:var(--org);line-height:.95;white-space:nowrap}
+#bigsave small{display:block;font-family:var(--mono);font-size:9.5px;color:var(--faint);letter-spacing:.14em;margin-top:4px;font-weight:400}
+#bars{flex:1;padding-bottom:2px}
+.barrow{display:flex;align-items:center;gap:9px;margin-top:5px}
+.barrow .bl{flex:0 0 74px;text-align:right;font-size:9.5px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase}
+.barrow .bt{flex:1;height:11px;background:var(--panel2);border:1px solid var(--line);position:relative}
+.barrow .bf{position:absolute;inset:0;width:0;background:#4a4234;transition:width .7s ease}
+.barrow .bf.org{background:var(--org)}
+.barrow .bv{flex:0 0 86px;font-size:11px;color:var(--dim)}
+.barrow .bv b{color:var(--ink)}
+#rail-right .sect{border-bottom:1px solid var(--line);padding:12px 16px}
+#rail-right .sect h3{font-size:9.5px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;margin-bottom:7px;font-weight:500}
+.kv{display:flex;justify-content:space-between;padding:3.5px 0;font-size:11px}
+.kv .k{color:var(--faint);letter-spacing:.06em}
+.kv .v{color:var(--ink);font-weight:500;text-align:right}
+.kv .v.org{color:var(--org)} .kv .v.red{color:var(--red)}
+#scopes{max-height:218px;overflow-y:auto}
+.srow{padding:4px 0;border-bottom:1px dashed rgba(255,255,255,.05)}
+.srow .stool{color:var(--dim);font-size:10.5px}
+.srow.blocked .stool{color:#ff9d94}
+.sc{display:inline-block;border:1px solid var(--line2);font-size:9px;padding:0 4px;margin:2px 2px 0 0;color:var(--dim)}
+.sc.ok{color:#b7c9a8;border-color:rgba(140,180,120,.35)}
+.sc.ok::before{content:'✓ ';color:#9db98a}
+.sc.miss{color:#ffb3ab;border-color:var(--red);background:#2a0d08}
+.sc.miss::before{content:'✕ ';color:var(--red)}
+#ticker{padding:2px 0 4px;font-size:10px;line-height:1.65;color:var(--dim);white-space:pre-wrap;word-break:break-all}
+#ticker .t{color:var(--faint)} #ticker .req{color:var(--ink)} #ticker .org{color:var(--org)} #ticker .red{color:var(--red)}
+
+/* ===== EVIDENCE view ===== */
+#view-evidence{flex-direction:column;overflow-y:auto;padding:20px;gap:16px}
+.evpanel{border:1px solid var(--line);background:rgba(13,11,9,.92);padding:16px 18px}
+.evpanel h3{font-size:10px;letter-spacing:.14em;color:var(--faint);text-transform:uppercase;font-weight:500;margin-bottom:11px}
+.evpanel h3 b{color:var(--org)}
+.evrow{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.rrow{display:flex;align-items:center;gap:9px;margin-top:8px}
+.rrow .rl{flex:0 0 118px;font-size:10px;color:var(--dim);white-space:nowrap}
+.rrow .rt{flex:1;height:14px;background:var(--panel2);border:1px solid var(--line);position:relative}
+.rrow .rf{position:absolute;inset:0}
+.rrow .rv{flex:0 0 210px;font-size:10.5px;color:var(--faint)}
+.rrow .rv b{color:var(--ink)}
+.bigpair{display:flex;align-items:center;gap:15px;margin-top:4px;flex-wrap:wrap}
+.bigpair .n{font-family:var(--disp);font-size:32px;font-weight:700;line-height:1}
+.bigpair .cap{font-size:9.5px;color:var(--faint);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.bigpair .arr{color:var(--org);font-size:19px}
+.evpill{display:inline-block;border:1px solid var(--line2);padding:5px 9px;font-size:10.5px;color:var(--dim);margin:0 5px 6px 0}
+.evpill b{color:var(--ink)}
+.ingrow{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.05)}
+.ingrow:last-child{border-bottom:none}
+.ingrow .it{flex:0 0 330px;font-size:11px;color:var(--dim);line-height:1.45}
+.ingrow .it b{color:var(--ink);font-weight:500}
+.ichip{border:1px solid var(--org);color:#ffb894;background:#2a1408;padding:3px 8px;font-size:10.5px}
+.ichip.plain{border-color:var(--line2);color:var(--dim);background:var(--panel2)}
+.ichip.stop{border-color:var(--red);color:#ff9d94;background:#2a0d08}
+.iarr{color:var(--org)}
+.ingmeta{margin-left:auto;font-size:10.5px;color:var(--faint);white-space:nowrap}
+.ingmeta b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <div id="wordmark">WAYPOINT<sup>®</sup></div>
+  <div id="tagline">Agents pull only what the task needs.</div>
+  <div id="chips">
+    <div class="chip"><span>catalog</span><b id="c-tools">—</b></div>
+    <div class="chip"><span>preload</span><b id="c-preload">—</b></div>
+    <div class="chip"><span>graph avg</span><b id="c-graph">—</b></div>
+    <div class="chip"><span>chain acc</span><b id="c-acc">—</b></div>
+    <div class="chip"><span>load</span><b id="c-load">—</b></div>
+  </div>
+</header>
+
+<div id="shell">
+  <nav id="navrail">
+    <button class="navbtn sel" data-view="run"><span class="nl">RUN</span><span class="ns">the product</span></button>
+    <button class="navbtn" data-view="graph"><span class="nl">GRAPH</span><span class="ns">under the hood</span></button>
+    <button class="navbtn" data-view="evidence"><span class="nl">EVIDENCE</span><span class="ns">the numbers</span></button>
+    <div id="navfoot">hydradb<br>live · :18443</div>
+  </nav>
+
+  <aside id="composer">
+    <div class="panehead"><span class="no">01</span><h2>TASK</h2><span class="micro" style="margin-left:auto">an agent's job</span></div>
+    <div id="tasks"></div>
+    <div id="rolebox">
+      <div class="micro">Run as role</div>
+      <div id="pills"></div>
+      <button id="runbtn">RUN ▸</button>
+      <div id="runnote">Every run resolves live against the tool graph in HydraDB.</div>
+    </div>
+  </aside>
+
+  <!-- ============ VIEW: RUN ============ -->
+  <section class="view" id="view-run">
+    <div id="stage">
+      <div class="wincol">
+        <div class="winhead"><span class="wt">WITHOUT WAYPOINT · <b>PRELOAD ALL</b></span><span class="micro">agent context</span></div>
+        <div class="winframe"><div id="floodbox"></div></div>
+        <div class="winfoot">
+          <div class="tokbar"><div class="tokfill flood" style="width:100%"></div></div>
+          <div class="winstat"><span class="n" id="flood-tok">— tok</span><span class="s">tokens spent before the task even starts · every task, every time</span></div>
+        </div>
+      </div>
+      <div class="wincol">
+        <div class="winhead"><span class="wt orgt">WITH WAYPOINT · <b>ROUTED</b></span><span class="micro">agent context</span></div>
+        <div class="winframe" id="routed"><div id="routed-empty">Waiting for a task</div></div>
+        <div class="winfoot">
+          <div class="tokbar"><div class="tokfill org" id="routed-fill"></div></div>
+          <div class="winstat">
+            <span class="n"><span id="routed-tok">0</span> tok loaded</span>
+            <span class="s" id="routed-note">nothing loaded yet</span>
+            <div id="savewrap"><div id="savepct">—<small>saved vs preload</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="resultstrip">
+      <div id="result-line">Waiting for a task.</div>
+      <div id="result-stats"></div>
+    </div>
+    <div id="strips">
+      <div class="strip">
+        <h3><b>·</b>&nbsp; LEARNS FROM OUTCOMES</h3>
+        <div class="stripflex">
+          <svg id="curve-mini" width="148" height="46"></svg>
+          <div>
+            <div class="nums" id="learn-nums">—</div>
+            <div class="micro" style="margin-top:3px">top-chain accuracy · 4 passes</div>
+          </div>
+        </div>
+      </div>
+      <div class="strip">
+        <h3><b>·</b>&nbsp; HOLDS UP UNDER LOAD</h3>
+        <div id="load-chips"></div>
+      </div>
+      <div class="strip">
+        <h3><b>·</b>&nbsp; BEATS VECTOR ON CHAINS</h3>
+        <div id="vector-chips"></div>
+      </div>
+    </div>
+    <div id="agentfeed">
+      <div class="afhead"><h3><b>·</b>&nbsp; LIVE AGENT FEED</h3><span class="afsub">external agents · via MCP server</span></div>
+      <div id="afrows"><div id="afempty">No external agent calls yet — connect an agent via MCP to see it work here.</div></div>
+    </div>
+  </section>
+
+  <!-- ============ VIEW: GRAPH ============ -->
+  <section class="view hidden" id="view-graph">
+    <div id="graphcol">
+      <div class="panehead"><span class="no">02</span><h2>THE GRAPH</h2><span class="micro" id="graphsub">core tools × datatypes · live from hydradb</span></div>
+      <div id="graphwrap">
+        <svg id="graph" preserveAspectRatio="xMidYMid meet"></svg>
+        <div id="graphlegend"><span><i class="lg-tool"></i>tool</span><span><i class="lg-type"></i>datatype</span><span><i class="lg-lit"></i>resolved path</span></div>
+      </div>
+      <div id="chainbox">
+        <span class="micro">Resolved chain</span><span class="micro" id="chainmeta" style="margin-left:10px;color:var(--dim)"></span>
+        <div id="chain"><span style="color:var(--faint);font-size:11px">Pick a task and hit RUN — the path lights up on the graph.</span></div>
+      </div>
+      <div id="meterbox">
+        <div id="bigsave">—<small>token saving vs preload</small></div>
+        <div id="bars">
+          <div class="barrow"><span class="bl">preload-all</span><div class="bt"><div class="bf" id="bar-pre"></div></div><span class="bv" id="bv-pre">—</span></div>
+          <div class="barrow"><span class="bl">waypoint</span><div class="bt"><div class="bf org" id="bar-wp"></div></div><span class="bv" id="bv-wp">—</span></div>
+        </div>
+      </div>
+    </div>
+    <aside id="rail-right">
+      <div class="panehead"><span class="no">03</span><h2>INSPECTOR</h2></div>
+      <div class="sect">
+        <h3>Run telemetry</h3>
+        <div class="kv"><span class="k">STATUS</span><span class="v" id="t-status">idle</span></div>
+        <div class="kv"><span class="k">METHOD</span><span class="v" id="t-method">—</span></div>
+        <div class="kv"><span class="k">DB QUERIES</span><span class="v" id="t-dbq">—</span></div>
+        <div class="kv"><span class="k">SNAPSHOT CACHE</span><span class="v" id="t-cache">—</span></div>
+        <div class="kv"><span class="k">ROUND TRIPS</span><span class="v" id="t-rt">—</span></div>
+        <div class="kv"><span class="k">LATENCY</span><span class="v" id="t-lat">—</span></div>
+        <div class="kv"><span class="k">ROUTE</span><span class="v" id="t-route">—</span></div>
+      </div>
+      <div class="sect">
+        <h3>Entity · resolved in graph</h3>
+        <div class="kv"><span class="k" id="e-name">—</span><span class="v org" id="e-ref">—</span></div>
+      </div>
+      <div class="sect">
+        <h3>Scope checklist · chain tools vs role</h3>
+        <div id="scopes"><span style="color:var(--faint);font-size:10.5px">No run yet.</span></div>
+      </div>
+      <div class="sect">
+        <h3>Node</h3>
+        <div class="kv"><span class="k">TOOL</span><span class="v" id="n-key">click a tool node</span></div>
+        <div class="kv"><span class="k">SERVER</span><span class="v" id="n-server">—</span></div>
+        <div class="kv"><span class="k">TOKENS</span><span class="v" id="n-tokens">—</span></div>
+        <div class="kv"><span class="k">SCOPES</span><span class="v" id="n-scopes">—</span></div>
+      </div>
+      <div class="sect" style="border-bottom:none">
+        <h3>Execution ticker · real api exchange</h3>
+        <div id="ticker"></div>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ============ VIEW: EVIDENCE ============ -->
+  <section class="view hidden" id="view-evidence">
+    <div class="evpanel">
+      <h3><b>04</b>&nbsp; THE RACE — TOKENS PER TASK · LOG SCALE · SAME 20 TASKS</h3>
+      <div id="race-ev"></div>
+      <div class="micro" style="margin-top:9px" id="race-note"></div>
+    </div>
+    <div class="evrow">
+      <div class="evpanel">
+        <h3><b>05</b>&nbsp; LEARNING — OUTCOME WRITE-BACK · 4 PASSES OVER THE 20 TASKS</h3>
+        <svg id="curve-ev" width="100%" height="218" preserveAspectRatio="none"></svg>
+        <div id="curvelegend-ev" style="margin-top:6px;font-size:10px;color:var(--dim);line-height:1.6"></div>
+      </div>
+      <div class="evpanel">
+        <h3><b>06</b>&nbsp; UNDER LOAD — 50 CONCURRENT AGENTS · SAME PROTOCOL · SAME BOX</h3>
+        <div id="loadpairs-ev"></div>
+        <div id="loadlevels" style="margin-top:11px"></div>
+        <div class="micro" style="margin-top:8px">before → after the snapshot cache · errors were the db's own 30 s query timeouts</div>
+      </div>
+    </div>
+    <div class="evpanel">
+      <h3><b>07</b>&nbsp; BRING YOUR OWN CATALOG — INGESTED LIVE FROM REAL MCP SERVERS</h3>
+      <div style="margin-bottom:9px">
+        <span class="evpill">SOURCE · <b>official filesystem + memory MCP servers</b></span>
+        <span class="evpill">INGESTED · <b>23 real tools</b></span>
+        <span class="evpill">GRAPH · <b>329 → 352 tools</b></span>
+        <span class="evpill">RE-INGEST · <b>0 new · idempotent</b></span>
+      </div>
+      <div class="ingrow">
+        <span class="it"><b>r1</b> · Copy a file: read its text content, then write that content to the destination file</span>
+        <span class="ichip">read_file</span><span class="iarr">→</span><span class="ichip">write_file</span>
+        <span class="ingmeta"><b>230</b> tok · resolver</span>
+      </div>
+      <div class="ingrow">
+        <span class="it"><b>r2</b> · List the directories and file paths this agent is allowed to work with</span>
+        <span class="ichip">list_allowed_directories</span>
+        <span class="ingmeta"><b>110</b> tok · resolver</span>
+      </div>
+      <div class="ingrow">
+        <span class="it"><b>r3</b> · Look up what the knowledge graph holds for a query</span>
+        <span class="ichip">search_nodes</span>
+        <span class="ingmeta"><b>122</b> tok · mspaths</span>
+      </div>
+      <div class="ingrow">
+        <span class="it"><b>r1 as fs_reader</b> · same copy task, read-only role</span>
+        <span class="ichip stop">✕ stopped at write_file · needs fs:write</span>
+        <span class="ingmeta">checkpoint holds on real tools too</span>
+      </div>
+      <div class="micro" style="margin-top:9px">results artifact · results/ingest-real.json</div>
+    </div>
+    <div class="evpanel">
+      <h3><b>08</b>&nbsp; SHIPS AS AN MCP SERVER</h3>
+      <div>
+        <span class="evpill">TOOLS · <b>find_tools · resolve_entity · report_outcome</b></span>
+        <span class="evpill">TRANSPORT · <b>stdio · JSON-RPC 2.0</b></span>
+        <span class="evpill">PROOF · <b>results/mcp-server-proof.txt</b></span>
+      </div>
+      <div class="micro" style="margin-top:4px">any mcp client can call waypoint's routing directly — tools/list + tools/call transcript in the proof file</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const NS = 'http://www.w3.org/2000/svg';
+const fmt = n => Math.round(n).toLocaleString('en-US');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+
+/* Readiness lines: what the agent is equipped to do once the routed tools
+   land in its context. Routing is what's real — nothing here claims the
+   task itself was executed. */
+const READY = {
+  t01: 'Ready to refund Sharma Traders for order 4821 and send the receipt',
+  t02: 'Ready to check whether Acme Corp\u2019s charge was charged back',
+  t03: 'Ready: March invoice addressed to Acme Corp\u2019s finance contact',
+  t04: 'Ready to void the latest invoice for Sharma Traders',
+  t05: 'Ready to create a customer for priya@example.com and find her charges',
+  t06: 'Ready to open a bug issue on the launch repo',
+  t07: 'Ready to merge the open pull request on the launch repo',
+  t08: 'Ready to invite Acme Corp\u2019s finance contact to the launch repo',
+  t09: 'Ready to schedule the eng team standup and announce it in the team chat',
+  t10: 'Ready to cancel tomorrow\u2019s standup event for the eng team',
+  t11: 'Ready to find the March invoice file in Drive and share it with Acme\u2019s finance contact',
+  t12: 'Ready to summarize the onboarding doc from Drive',
+  t13: 'Ready to sign the invoice PDF for Acme Corp',
+  t14: 'Ready to escalate ticket 881 to the senior support queue',
+  t15: 'Ready to close ticket 881 after resolution',
+  t16: 'Ready to create Priya Sharma\u2019s employee record and assign her laptop',
+  t17: 'Ready to book the onboarding session for Priya Sharma',
+  t18: 'Ready to update the Acme Corp deal after the pricing call',
+  t19: 'Ready to find the thread about the Acme invoice and archive it',
+  t20: 'Ready to email the summary of the onboarding doc to Priya Sharma',
+};
+
+const S = {
+  tasks: [], taskOf: {}, roles: [], roleScopes: {},
+  selTask: 't03', selRole: null,
+  graph: null, toolOf: {}, consumes: {}, produces: {}, scopesOf: {},
+  pos: {}, edgeEls: {}, nodeEls: {}, lastRes: null, lastTask: null,
+  running: false, chainLen: {}, preload: 27000, instant: false,
+  view: 'run', graphSized: false,
+};
+
+async function getJSON(url){ const r = await fetch(url); if(!r.ok) throw new Error(url+' → HTTP '+r.status); return r.json(); }
+function ts(){ return new Date().toTimeString().slice(0,8); }
+function tick(html){
+  const el = $('ticker'); if(!el) return;
+  const d = document.createElement('div');
+  d.innerHTML = '<span class="t">'+ts()+'</span>  '+html;
+  el.appendChild(d);
+  while(el.children.length > 9) el.removeChild(el.firstChild);
+}
+
+/* ---------------- composer: tasks + roles ---------------- */
+function selectTask(id, setRole = true){
+  S.selTask = id;
+  document.querySelectorAll('.trow').forEach(r => r.classList.toggle('sel', r.dataset.id === id));
+  if(setRole) selectRole(S.taskOf[id].role);
+  resetStage();
+}
+function selectRole(role){
+  S.selRole = role;
+  document.querySelectorAll('.pill').forEach(p => p.classList.toggle('sel', p.dataset.role === role));
+}
+function renderTasks(){
+  const box = $('tasks'); box.innerHTML = '';
+  S.tasks.forEach(t => {
+    const d = document.createElement('div');
+    d.className = 'trow'; d.dataset.id = t.id; d.title = t.text;
+    const len = S.chainLen[t.id];
+    d.innerHTML = '<span class="tid">'+t.id+'</span><span class="ttx">'+esc(t.text)+'</span>' +
+      (len ? '<span class="badge"><b>'+len+'</b> tools</span>' : '');
+    d.onclick = () => selectTask(t.id);
+    box.appendChild(d);
+  });
+  const pills = $('pills'); pills.innerHTML = '';
+  S.roles.forEach(r => {
+    const b = document.createElement('button');
+    b.className = 'pill'; b.dataset.role = r; b.textContent = r;
+    b.onclick = () => selectRole(r);
+    pills.appendChild(b);
+  });
+}
+
+/* ---------------- RUN stage: the flood (preload window) ---------------- */
+function renderFlood(bench){
+  const box = $('floodbox'); box.innerHTML = '';
+  const core = new Set(S.graph.tools.map(t => t.key));
+  S.graph.tools.forEach(t => {
+    const c = document.createElement('span'); c.className = 'fchip'; c.textContent = t.key;
+    box.appendChild(c);
+  });
+  // a real sample of the distractor flood, named in the benchmark artifact
+  const seen = new Set(); const sample = [];
+  (bench.arm_b_vector_topk.tasks || []).forEach(pt => {
+    (pt.retrieved || []).forEach(k => {
+      if(!core.has(k) && !seen.has(k) && sample.length < 14){ seen.add(k); sample.push(k); }
+    });
+  });
+  sample.forEach(k => {
+    const c = document.createElement('span'); c.className = 'fchip dist'; c.textContent = k;
+    box.appendChild(c);
+  });
+  const more = document.createElement('span'); more.className = 'fchip more';
+  more.textContent = '+'+fmt(S.graph.counts.distractors - sample.length)+' more tools';
+  box.appendChild(more);
+  $('flood-tok').textContent = fmt(S.preload)+' tok';
+}
+
+/* ---------------- RUN stage: the routed window ---------------- */
+function resetStage(){
+  const r = $('routed');
+  r.innerHTML = '<div id="routed-empty">Waiting for a task</div>';
+  $('routed-fill').style.width = '0%';
+  $('routed-tok').textContent = '0';
+  $('routed-note').textContent = 'nothing loaded yet';
+  $('savepct').innerHTML = '—<small>saved vs preload</small>';
+  const line = $('result-line');
+  line.textContent = 'Waiting for a task.'; line.className = '';
+  $('result-stats').innerHTML = '';
+}
+function countTokens(to, instant){
+  const el = $('routed-tok');
+  if(instant){ el.textContent = fmt(to); return Promise.resolve(); }
+  const t0 = performance.now(), dur = 550;
+  return new Promise(done => {
+    (function step(t){
+      const k = Math.min(1, (t - t0) / dur);
+      el.textContent = fmt(to * k);
+      if(k < 1) requestAnimationFrame(step); else done();
+    })(t0);
+  });
+}
+async function renderStage(res, task, instant){
+  const r = $('routed'); r.innerHTML = '';
+  const chain = res.chain || [];
+  if(res.error){
+    r.innerHTML = '<div id="routed-empty" style="color:var(--red)">'+esc(res.error)+'</div>';
+    return;
+  }
+  const counting = countTokens(res.refused ? 0 : (res.tokens_loaded || 0), instant);
+  for(let i = 0; i < chain.length; i++){
+    const key = chain[i];
+    const t = S.toolOf[key] || {server: '—', tokens: '—'};
+    const isBlocked = res.refused && key === res.blocked_tool;
+    const card = document.createElement('div');
+    card.className = 'tcard' + (isBlocked ? ' blocked' : '');
+    card.innerHTML = '<span class="step">'+(i + 1)+'</span>' +
+      '<span class="tn">'+esc(key)+'</span>' +
+      (isBlocked ? '<span class="ckpt">✕ CHECKPOINT</span>' : '') +
+      '<span class="tm">'+esc(t.server)+'<b>'+t.tokens+' tok</b></span>';
+    r.appendChild(card);
+    if(!instant && i < chain.length - 1) await sleep(200);
+  }
+  await counting;
+  const line = $('result-line'), stats = $('result-stats');
+  if(res.refused){
+    $('routed-fill').style.width = '0%';
+    $('routed-note').textContent = 'chain halted — nothing loaded';
+    $('savepct').innerHTML = '✕<small>stopped at checkpoint</small>';
+    line.textContent = 'Stopped: '+res.blocked_tool+' needs '+res.missing_scope+', which '+S.selRole+' doesn\u2019t hold.';
+    line.className = 'stop';
+    stats.innerHTML = '<b>0</b> tools loaded · halted at step '+(chain.indexOf(res.blocked_tool) + 1)+' of '+chain.length;
+  } else {
+    const n = res.tokens_loaded || 0;
+    const pct = 100 * (1 - n / S.preload);
+    $('routed-fill').style.width = Math.max(1.4, 100 * n / S.preload)+'%';
+    $('routed-note').textContent = chain.length+' tools in context — the agent can start';
+    $('savepct').innerHTML = pct.toFixed(1)+'%<small>saved vs preload</small>';
+    line.textContent = READY[task.id] || ('Ready: '+task.goal+' resolved');
+    line.className = '';
+    stats.innerHTML = 'chain resolved in <b>'+chain.length+' tools</b> · <b>'+fmt(n)+'</b> tokens · <b>'+res.db_queries+'</b> graph queries';
+  }
+}
+
+/* ---------------- graph layout (Phase 6, reused) ---------------- */
+function toolW(key){ return 16 + key.length * 5.9; }
+function typeW(name){ return 15 + name.length * 5.9; }
+
+function computeLayout(W){
+  const g = S.graph;
+  const nodes = {};
+  g.tools.forEach(t => nodes['tool:'+t.key] = {kind:'tool', name:t.key});
+  g.types.forEach(t => nodes['type:'+t] = {kind:'type', name:t});
+  const adj = {}; Object.keys(nodes).forEach(id => adj[id] = []);
+  g.edges.forEach(e => { adj[e.from].push(e.to); adj[e.to].push(e.from); });
+  const outAdj = {}; Object.keys(nodes).forEach(id => outAdj[id] = []);
+  g.edges.forEach(e => outAdj[e.from].push(e.to));
+  const produced = new Set(g.edges.filter(e => e.kind === 'out').map(e => e.to));
+  const dist = {};
+  const bfsFrom = root => {
+    if(dist[root] !== undefined) return;
+    dist[root] = 0; const q = [root];
+    while(q.length){
+      const id = q.shift();
+      for(const nb of outAdj[id]) if(dist[nb] === undefined){ dist[nb] = dist[id] + 1; q.push(nb); }
+    }
+  };
+  g.types.filter(t => !produced.has('type:'+t)).forEach(t => bfsFrom('type:'+t));
+  const startTypes = new Set(S.tasks.map(t => t.start));
+  let guard = 0;
+  while(Object.keys(dist).length < Object.keys(nodes).length && guard++ < 12){
+    const unT = g.types.filter(t => dist['type:'+t] === undefined)
+      .sort((a, b) => ((startTypes.has(b) ? 1 : 0) - (startTypes.has(a) ? 1 : 0)) || a.localeCompare(b));
+    if(unT.length){ bfsFrom('type:'+unT[0]); continue; }
+    const unTool = Object.keys(nodes).filter(id => dist[id] === undefined)[0];
+    if(unTool) bfsFrom(unTool); else break;
+  }
+  let maxD = Math.max(...Object.values(dist), 0);
+  Object.keys(nodes).forEach(id => { if(dist[id] === undefined) dist[id] = ++maxD; });
+  const layers = {};
+  Object.keys(nodes).forEach(id => { (layers[dist[id]] = layers[dist[id]] || []).push(id); });
+  const layerIdx = {};
+  Object.keys(layers).forEach(d => layers[d].forEach((id, i) => layerIdx[id] = i));
+  function bary(id, dir){
+    const nb = adj[id].filter(n => dist[n] === dist[id] + dir);
+    if(!nb.length) return layerIdx[id];
+    return nb.reduce((s, n) => s + layerIdx[n], 0) / nb.length;
+  }
+  for(let sweep = 0; sweep < 4; sweep++){
+    const dir = sweep % 2 === 0 ? -1 : 1;
+    const order = [];
+    for(let d = 0; d <= maxD; d++) order.push(d);
+    if(dir === 1) order.reverse();
+    order.forEach(d => {
+      if(!layers[d]) return;
+      layers[d].sort((a, b) => bary(a, dir) - bary(b, dir));
+      layers[d].forEach((id, i) => layerIdx[id] = i);
+    });
+  }
+  const pos = {}; let y = 10;
+  for(let d = 0; d <= maxD; d++){
+    const ids = layers[d] || []; if(!ids.length) continue;
+    const isTool = nodes[ids[0]].kind === 'tool';
+    const rowH = isTool ? 21 : 15, subGap = 9;
+    let x = 10, rowY = y;
+    ids.forEach(id => {
+      const w = isTool ? toolW(nodes[id].name) : typeW(nodes[id].name);
+      if(x + w > W - 8 && x > 10){ x = 10; rowY += rowH + subGap; }
+      pos[id] = {x, y: rowY, w, h: rowH, cx: x + w / 2, top: rowY, bottom: rowY + rowH, kind: nodes[id].kind, name: nodes[id].name};
+      x += w + 10;
+    });
+    y = rowY + rowH + 16;
+  }
+  return {pos, height: y};
+}
+
+function edgePath(a, b){
+  const dy = Math.max(14, Math.min(60, Math.abs(b.top - a.bottom) * 0.45));
+  const dir = b.top >= a.bottom ? 1 : -1;
+  return 'M '+a.cx+' '+a.bottom+' C '+a.cx+' '+(a.bottom + dy * dir)+', '+b.cx+' '+(b.top - dy * dir)+', '+b.cx+' '+b.top;
+}
+
+function renderGraph(){
+  const wrap = $('graphwrap'); const W = wrap.clientWidth || 800;
+  const {pos, height} = computeLayout(W);
+  S.pos = pos; S.edgeEls = {}; S.nodeEls = {};
+  const svg = $('graph');
+  svg.setAttribute('viewBox', '0 0 '+W+' '+height);
+  svg.innerHTML = '';
+  const eg = document.createElementNS(NS, 'g');
+  S.graph.edges.forEach(e => {
+    const a = pos[e.from], b = pos[e.to]; if(!a || !b) return;
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', edgePath(a, b)); p.setAttribute('class', 'edge');
+    eg.appendChild(p);
+    S.edgeEls[e.from+'>'+e.to] = p;
+  });
+  svg.appendChild(eg);
+  Object.keys(pos).forEach(id => {
+    const n = pos[id];
+    const gEl = document.createElementNS(NS, 'g');
+    gEl.setAttribute('class', 'node '+n.kind); gEl.dataset.id = id;
+    if(n.kind === 'tool'){
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', n.x); r.setAttribute('y', n.y);
+      r.setAttribute('width', n.w); r.setAttribute('height', n.h); r.setAttribute('rx', 3);
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', n.x + 8); t.setAttribute('y', n.y + 14.5); t.textContent = n.name;
+      gEl.appendChild(r); gEl.appendChild(t);
+    } else {
+      const r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', n.x); r.setAttribute('y', n.y + 3);
+      r.setAttribute('width', 9); r.setAttribute('height', 9);
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', n.x + 14); t.setAttribute('y', n.y + 11.5); t.textContent = n.name;
+      gEl.appendChild(r); gEl.appendChild(t);
+    }
+    svg.appendChild(gEl);
+    S.nodeEls[id] = gEl;
+  });
+  svg.querySelectorAll('.node.tool').forEach(el => {
+    const id = el.dataset.id;
+    el.addEventListener('mouseenter', () => setHL(id, true));
+    el.addEventListener('mouseleave', () => setHL(id, false));
+    el.addEventListener('click', () => showNode(id));
+  });
+  if(wrap.clientWidth) S.graphSized = true;
+}
+function setHL(id, on){
+  const neigh = new Set([id]);
+  S.graph.edges.forEach(e => {
+    if(e.from === id || e.to === id){
+      const ek = e.from+'>'+e.to;
+      if(S.edgeEls[ek]) S.edgeEls[ek].classList.toggle('hl', on);
+      neigh.add(e.from); neigh.add(e.to);
+    }
+  });
+  neigh.forEach(n => { if(S.nodeEls[n]) S.nodeEls[n].classList.toggle('hl', on); });
+}
+function showNode(id){
+  const t = S.toolOf[id.slice(5)]; if(!t) return;
+  $('n-key').textContent = t.key;
+  $('n-server').textContent = t.server;
+  $('n-tokens').textContent = t.tokens;
+  $('n-scopes').textContent = t.scopes.length ? t.scopes.join(', ') : 'none';
+}
+</script>
+
+<script>
+/* ---------------- graph run animation (Phase 6, reused) ---------------- */
+function clearPath(){
+  Object.values(S.nodeEls).forEach(el => el.classList.remove('lit','blocked','shake'));
+  Object.values(S.edgeEls).forEach(el => el.classList.remove('lit','blocked-edge'));
+  document.querySelectorAll('.xbadge,.ring,.pulse').forEach(el => el.remove());
+}
+function ring(id){
+  const n = S.pos[id]; if(!n) return;
+  const c = document.createElementNS(NS, 'circle');
+  c.setAttribute('cx', n.cx); c.setAttribute('cy', n.y + n.h / 2);
+  c.setAttribute('r', 6); c.setAttribute('class', 'ring');
+  $('graph').appendChild(c); setTimeout(() => c.remove(), 650);
+}
+async function pulseEdge(ek, ms){
+  const p = S.edgeEls[ek]; if(!p) return;
+  let L;
+  try { L = p.getTotalLength(); } catch(e){ return; }
+  const c = document.createElementNS(NS, 'circle');
+  c.setAttribute('r', 3); c.setAttribute('class', 'pulse');
+  $('graph').appendChild(c);
+  const t0 = performance.now();
+  await new Promise(done => {
+    (function step(t){
+      const k = Math.min(1, (t - t0) / ms);
+      const pt = p.getPointAtLength(L * k);
+      c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y);
+      if(k < 1) requestAnimationFrame(step); else done();
+    })(t0);
+  });
+  c.remove();
+}
+function light(id, cls){ if(S.nodeEls[id]) S.nodeEls[id].classList.add(cls || 'lit'); }
+function markBlocked(id){
+  const el = S.nodeEls[id]; if(!el) return;
+  el.classList.add('blocked', 'shake');
+  const n = S.pos[id];
+  const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'xbadge');
+  const c = document.createElementNS(NS, 'circle');
+  c.setAttribute('cx', n.x + n.w - 1); c.setAttribute('cy', n.y + 1); c.setAttribute('r', 7.5);
+  const t = document.createElementNS(NS, 'text');
+  t.setAttribute('x', n.x + n.w - 1); t.setAttribute('y', n.y + 4.5);
+  t.setAttribute('text-anchor', 'middle'); t.setAttribute('style', 'fill:#fff;font-size:10px;font-weight:700');
+  t.textContent = '✕';
+  g.appendChild(c); g.appendChild(t); el.appendChild(g);
+}
+
+async function animatePath(res, task, instant){
+  const avail = new Set(['type:'+task.start]);
+  if(res.entity && res.entity.ref) avail.add('type:'+res.entity.ref);
+  const supplied = new Set(res.supplied_inputs || []);
+  supplied.forEach(t => avail.add('type:'+t));
+  light('type:'+task.start);
+  if(res.entity && res.entity.ref) light('type:'+res.entity.ref);
+  const chips = document.querySelectorAll('.cchip');
+  let ci = 0;
+  for(const key of (res.chain || [])){
+    const tid = 'tool:'+key;
+    const isBlocked = res.refused && key === res.blocked_tool;
+    for(const inp of (S.consumes[key] || [])){
+      const src = 'type:'+inp, ek = src+'>'+tid;
+      if(avail.has(src) && S.edgeEls[ek]){
+        if(!instant) await pulseEdge(ek, 190);
+        S.edgeEls[ek].classList.add(isBlocked ? 'blocked-edge' : 'lit');
+        if(supplied.has(inp)) light(src, 'supplied');
+      }
+    }
+    if(isBlocked){
+      markBlocked(tid);
+      if(chips[ci]) chips[ci].classList.add('blocked');
+      for(let j = ci + 1; j < chips.length; j++) chips[j].classList.add('after');
+      return;
+    }
+    light(tid); ring(tid);
+    if(chips[ci]) chips[ci].classList.add('lit');
+    ci++;
+    for(const out of (S.produces[key] || [])){
+      const oid = 'type:'+out, ek = tid+'>'+oid;
+      if(S.edgeEls[ek]){
+        if(!instant) await pulseEdge(ek, 160);
+        S.edgeEls[ek].classList.add('lit');
+      }
+      light(oid); if(supplied.has(out)) light(oid, 'supplied');
+      avail.add(oid);
+    }
+    if(!instant) await sleep(80);
+  }
+}
+
+function renderChainStrip(res){
+  const box = $('chain'); box.innerHTML = '';
+  $('chainmeta').textContent = res.refused
+    ? 'stopped at checkpoint · '+res.blocked_tool+' · missing '+res.missing_scope
+    : (res.chain ? res.chain.length+' tools · '+(res.method || '')+' · entity '+(res.entity ? res.entity.name : '—') : '');
+  (res.chain || []).forEach((key, i) => {
+    if(i) { const a = document.createElement('span'); a.className = 'carr'; a.textContent = '→'; box.appendChild(a); }
+    const c = document.createElement('span'); c.className = 'cchip'; c.textContent = key;
+    box.appendChild(c);
+  });
+  if(res.error){ box.innerHTML = '<span style="color:var(--red);font-size:11px">'+esc(res.error)+'</span>'; }
+}
+function renderMeter(res){
+  const pre = S.preload;
+  $('bar-pre').style.width = '100%';
+  $('bv-pre').innerHTML = '<b>'+fmt(pre)+'</b> tok';
+  if(res.refused){
+    $('bigsave').innerHTML = '✕<small>refused · 0 tools loaded</small>';
+    $('bar-wp').style.width = '0%';
+    $('bv-wp').innerHTML = '0 tok · stopped at <b>'+esc(res.blocked_tool)+'</b>';
+    return;
+  }
+  const n = res.tokens_loaded || 0;
+  const pct = (100 * (1 - n / pre));
+  $('bigsave').innerHTML = pct.toFixed(1)+'%<small>token saving vs preload</small>';
+  $('bar-wp').style.width = Math.max(1.4, 100 * n / pre)+'%';
+  $('bv-wp').innerHTML = '<b>'+fmt(n)+'</b> tok';
+}
+function renderInspector(res, task, ms){
+  const st = $('t-status');
+  if(res.error){ st.textContent = 'ERROR'; st.className = 'v red'; }
+  else if(res.refused){ st.textContent = 'REFUSED — CHECKPOINT'; st.className = 'v red'; }
+  else { st.textContent = 'RESOLVED'; st.className = 'v org'; }
+  $('t-method').textContent = (res.method || '—').toUpperCase();
+  $('t-dbq').textContent = res.db_queries != null ? res.db_queries : '—';
+  $('t-cache').textContent = res.cache_hit == null ? '—' : (res.cache_hit ? 'HIT' : 'MISS · loaded');
+  $('t-rt').textContent = res.round_trips != null ? res.round_trips : '—';
+  $('t-lat').textContent = Math.round(ms)+' ms';
+  $('t-route').textContent = task.start+' → '+task.goal;
+  $('e-name').textContent = task.entity || '—';
+  $('e-ref').textContent = res.entity ? ('→ '+res.entity.ref) : '—';
+  const held = new Set(S.roleScopes[S.selRole] || []);
+  const box = $('scopes'); box.innerHTML = '';
+  (res.chain || []).forEach(key => {
+    const row = document.createElement('div');
+    row.className = 'srow' + (res.refused && key === res.blocked_tool ? ' blocked' : '');
+    let h = '<span class="stool">'+esc(key)+'</span><br>';
+    const scs = S.scopesOf[key] || [];
+    if(!scs.length) h += '<span class="sc">no scope required</span>';
+    scs.forEach(s => { h += '<span class="sc '+(held.has(s) ? 'ok' : 'miss')+'">'+esc(s)+'</span>'; });
+    row.innerHTML = h; box.appendChild(row);
+  });
+  if(!(res.chain || []).length) box.innerHTML = '<span style="color:var(--faint);font-size:10.5px">No chain.</span>';
+}
+
+/* ---------------- the run: both views update ---------------- */
+async function runTask(){
+  if(S.running) return;
+  const task = S.taskOf[S.selTask]; if(!task) return;
+  S.running = true;
+  const btn = $('runbtn'); btn.disabled = true; btn.textContent = 'RUNNING…';
+  clearPath();
+  $('t-status').textContent = 'traversing…'; $('t-status').className = 'v';
+  $('result-line').textContent = 'Routing…'; $('result-line').className = '';
+  const reqBody = {task_id: task.id, role: S.selRole};
+  tick('<span class="req">&gt; POST /api/find_tools</span> '+esc(JSON.stringify(reqBody)));
+  const t0 = performance.now();
+  let res;
+  try {
+    const r = await fetch('/api/find_tools', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(reqBody)});
+    res = await r.json();
+  } catch(e){ res = {error: String(e), chain: null}; }
+  const ms = performance.now() - t0;
+  S.lastRes = res; S.lastTask = task;
+  if(res.error){
+    tick('<span class="red">&lt; ERROR</span> '+esc(res.error));
+  } else if(res.refused){
+    tick('<span class="red">&lt; 200 · REFUSED</span> at '+esc(res.blocked_tool)+' · missing '+esc(res.missing_scope)+' · '+(res.db_queries)+' dbq · '+Math.round(ms)+'ms');
+  } else {
+    tick('<span class="org">&lt; 200</span> · '+(res.chain || []).length+' tools · '+fmt(res.tokens_loaded || 0)+' tok · '+(res.method || '')+' · '+(res.db_queries)+' dbq · cache '+(res.cache_hit ? 'hit' : 'miss')+' · '+Math.round(ms)+'ms');
+  }
+  renderChainStrip(res);
+  renderMeter(res);
+  renderInspector(res, task, ms);
+  await Promise.all([
+    renderStage(res, task, S.instant),
+    animatePath(res, task, S.instant),
+  ]);
+  btn.disabled = false; btn.textContent = 'RUN ▸';
+  S.running = false;
+}
+
+/* ---------------- RUN strips + EVIDENCE ---------------- */
+function renderStrips(bench, learn, lt1, lt2){
+  const v2 = (learn.v2 || {}).pass_accuracies || [];
+  const svg = $('curve-mini');
+  if(v2.length){
+    const W = 148, H = 46, x0 = 4, x1 = 144, y0 = 40, y1 = 6;
+    const X = i => x0 + i * (x1 - x0) / (v2.length - 1);
+    const Y = a => y0 - ((a - 0.8) / 0.2) * (y0 - y1);
+    let h = '<polyline fill="none" stroke="#ff4d00" stroke-width="2" points="'+v2.map((a, i) => X(i)+','+Y(a)).join(' ')+'"/>';
+    v2.forEach((a, i) => { h += '<circle cx="'+X(i)+'" cy="'+Y(a)+'" r="2.4" fill="#ff4d00"/>'; });
+    svg.innerHTML = h;
+    $('learn-nums').innerHTML = v2[0].toFixed(2)+' <span class="org">→</span> '+v2[v2.length - 1].toFixed(2);
+  }
+  const b = (lt1 || {}).summary || {};
+  const runs = (lt2 || {}).runs || [];
+  const r50 = runs.filter(r => r.summary.agents_concurrent === 50)[0] || runs[runs.length - 1] || {summary: {}};
+  const a = r50.summary;
+  const thr = v => v == null ? '—' : (v >= 10 ? v.toFixed(1) : v.toFixed(2));
+  $('load-chips').innerHTML =
+    '<span class="spill"><b>'+(a.agents_concurrent || 50)+'</b> concurrent agents</span>' +
+    '<span class="spill">errors <b>'+(b.errors != null ? b.errors : '—')+'</b> <span class="org">→</span> <b>'+(a.errors != null ? a.errors : '—')+'</b></span>' +
+    '<span class="spill"><b>'+thr(a.throughput_calls_per_s)+'</b> calls/s</span>' +
+    '<span class="spill">p95 <b>'+fmt(a.latency_ms ? a.latency_ms.p95 : 0)+'</b> ms</span>';
+  const vb = bench.arm_b_vector_topk, cb = bench.arm_c_graph;
+  $('vector-chips').innerHTML =
+    '<span class="spill">vector top-k · full chain <b>'+vb.tasks_with_full_chain+'/'+cb.tasks+'</b></span>' +
+    '<span class="spill">graph · <b>'+cb.chain_accuracy_exact+'/'+cb.tasks+'</b></span>' +
+    '<span class="spill"><b>'+fmt(vb.mean_tokens)+'</b> tok vs <b>'+fmt(cb.mean_tokens)+'</b> tok per task</span>';
+  return {lt1Summary: b, r50: a, thr};
+}
+function renderRaceEv(bench){
+  const a = bench.arm_a_preload, v = bench.arm_b_vector_topk, c = bench.arm_c_graph;
+  const rows = [
+    {l: 'A · preload-all', val: a.tokens_per_task, fill: '#4a4234', note: '<b>'+fmt(a.tokens_per_task)+'</b> tok · all '+a.tools_loaded_per_task+' tools, every task'},
+    {l: 'B · TF-IDF top-10', val: v.mean_tokens, fill: '#4a4234', note: '<b>'+fmt(v.mean_tokens)+'</b> tok · full chain <b>'+v.tasks_with_full_chain+'/'+c.tasks+'</b> · recall '+v.mean_chain_recall},
+    {l: 'C · waypoint graph', val: c.mean_tokens, fill: 'var(--org)', note: '<b>'+fmt(c.mean_tokens)+'</b> tok · chain <b>'+c.chain_accuracy_exact+'/'+c.tasks+'</b> exact · '+c.mean_round_trips+' round trips · p95 '+fmt(c.p95_latency_ms)+' ms'},
+  ];
+  const max = Math.log10(a.tokens_per_task);
+  $('race-ev').innerHTML = rows.map(r =>
+    '<div class="rrow"><span class="rl">'+r.l+'</span><div class="rt"><div class="rf" style="width:'+(100 * Math.log10(Math.max(r.val, 1)) / max).toFixed(1)+'%;background:'+r.fill+'"></div></div><span class="rv">'+r.note+'</span></div>'
+  ).join('');
+  $('race-note').textContent = 'arm b is a TF-IDF lexical baseline (pure python — not a neural embedding model) · arm a retrieves everything, so its chain is contained by construction; its cost is the story';
+}
+function renderCurveEv(learn){
+  const v1 = (learn.v1 || {}).pass_accuracies || [], v2 = (learn.v2 || {}).pass_accuracies || [];
+  const svg = $('curve-ev'); const W = 760, H = 218, x0 = 34, x1 = 736, y0 = 188, y1 = 16;
+  const X = i => x0 + i * (x1 - x0) / 3, Y = a => y0 - a * (y0 - y1);
+  let h = '';
+  [0, 0.5, 1].forEach(a => {
+    h += '<line x1="'+x0+'" y1="'+Y(a)+'" x2="'+x1+'" y2="'+Y(a)+'" stroke="rgba(255,255,255,.08)"/>' +
+         '<text x="4" y="'+(Y(a) + 3)+'" fill="#6f675a" font-size="10" font-family="var(--mono)">'+a.toFixed(1)+'</text>';
+  });
+  const line = (arr, color, w) => '<polyline fill="none" stroke="'+color+'" stroke-width="'+w+'" points="'+arr.map((a, i) => X(i)+','+Y(a)).join(' ')+'"/>' +
+    arr.map((a, i) => '<circle cx="'+X(i)+'" cy="'+Y(a)+'" r="3.2" fill="'+color+'"/><text x="'+X(i)+'" y="'+(Y(a) - 9)+'" fill="'+color+'" font-size="10.5" text-anchor="middle" font-family="var(--mono)">'+a.toFixed(2)+'</text>').join('');
+  h += line(v1, '#8b8474', 1.6) + line(v2, '#ff4d00', 2.4);
+  v2.forEach((a, i) => { h += '<text x="'+X(i)+'" y="212" fill="#6f675a" font-size="10" text-anchor="middle" font-family="var(--mono)">pass '+(i + 1)+'</text>'; });
+  svg.setAttribute('viewBox', '0 0 '+W+' '+H); svg.innerHTML = h;
+  $('curvelegend-ev').innerHTML =
+    '<span style="color:var(--org)">■</span> v2 · length-first + failure feedback · <b style="color:var(--ink)">'+v2.join(' → ')+'</b>' +
+    '<br><span style="color:#8b8474">■</span> v1 · weight-first · success-only · '+v1.join(' → ')+' · shown, not hidden — v1 failed and the log says why';
+}
+function renderLoadEv(lt1, lt2){
+  const b = (lt1 || {}).summary || {};
+  const runs = (lt2 || {}).runs || [];
+  const r50 = runs.filter(r => r.summary.agents_concurrent === 50)[0] || runs[runs.length - 1] || {summary: {}};
+  const a = r50.summary;
+  const thr = v => v == null ? '—' : (v >= 10 ? v.toFixed(1) : v.toFixed(2));
+  $('loadpairs-ev').innerHTML =
+    '<div class="bigpair">' +
+    '<div><div class="n" style="color:var(--red)">'+(b.errors != null ? b.errors : '—')+'</div><div class="cap">errors · before</div></div>' +
+    '<div><div class="n" style="color:var(--dim)">'+thr(b.throughput_calls_per_s)+'<span style="font-size:15px">/s</span></div><div class="cap">throughput</div></div>' +
+    '<div class="arr">→</div>' +
+    '<div><div class="n org">'+(a.errors != null ? a.errors : '—')+'</div><div class="cap">errors · after</div></div>' +
+    '<div><div class="n">'+thr(a.throughput_calls_per_s)+'<span style="font-size:15px">/s</span></div><div class="cap">throughput</div></div>' +
+    '</div>';
+  $('loadlevels').innerHTML = runs.map(r => {
+    const s = r.summary;
+    return '<span class="evpill"><b>'+s.agents_concurrent+'</b> agents · <b>'+s.errors+'</b> errors · <b>'+thr(s.throughput_calls_per_s)+'</b> calls/s · p95 <b>'+fmt(s.latency_ms.p95)+'</b> ms</span>';
+  }).join('');
+  return {r50: a, thr};
+}
+
+/* ---------------- nav ---------------- */
+function showView(name){
+  S.view = name;
+  document.querySelectorAll('.navbtn').forEach(b => b.classList.toggle('sel', b.dataset.view === name));
+  ['run', 'graph', 'evidence'].forEach(v => $('view-'+v).classList.toggle('hidden', v !== name));
+  if(name === 'graph' && !S.graphSized){
+    renderGraph();
+    if(S.lastRes && S.lastTask){
+      clearPath();
+      animatePath(S.lastRes, S.lastTask, true);
+    }
+  }
+}
+document.querySelectorAll('.navbtn').forEach(b => { b.onclick = () => showView(b.dataset.view); });
+
+/* ---------------- boot ---------------- */
+async function init(){
+  const [tasksData, graph, bench, learn, lt1, lt2] = await Promise.all([
+    getJSON('/api/tasks'), getJSON('/api/graph'), getJSON('/api/benchmark'),
+    getJSON('/api/learning'), getJSON('/api/loadtest'), getJSON('/api/loadtest2'),
+  ]);
+  S.tasks = tasksData.tasks; S.taskOf = {}; S.tasks.forEach(t => S.taskOf[t.id] = t);
+  S.roleScopes = tasksData.role_scopes;
+  // role pills: the 8 roles the benchmark tasks actually state
+  S.roles = [...new Set(S.tasks.map(t => t.role))];
+  S.graph = graph;
+  graph.tools.forEach(t => {
+    S.toolOf[t.key] = t; S.scopesOf[t.key] = t.scopes;
+    S.consumes[t.key] = []; S.produces[t.key] = [];
+  });
+  graph.edges.forEach(e => {
+    if(e.kind === 'in') S.consumes[e.to.slice(5)].push(e.from.slice(5));
+    else S.produces[e.from.slice(5)].push(e.to.slice(5));
+  });
+  (bench.arm_c_graph.per_task || []).forEach(p => { S.chainLen[p.id] = (p.chain || []).length; });
+  S.preload = bench.arm_a_preload.tokens_per_task;
+  // top bar chips — all from the APIs
+  $('c-tools').textContent = fmt(graph.counts.total_tools + (graph.counts.ingested_tools || 0));
+  $('c-preload').textContent = fmt(bench.arm_a_preload.tokens_per_task);
+  $('c-graph').textContent = '~'+fmt(bench.arm_c_graph.mean_tokens);
+  $('c-acc').textContent = bench.arm_c_graph.chain_accuracy_exact+'/'+bench.arm_c_graph.tasks;
+  renderTasks();
+  renderFlood(bench);
+  renderGraph();
+  renderStrips(bench, learn, lt1, lt2);
+  renderRaceEv(bench);
+  renderCurveEv(learn);
+  const {r50, thr} = renderLoadEv(lt1, lt2);
+  $('c-load').textContent = thr(r50.throughput_calls_per_s)+' calls/s';
+  selectTask('t03');
+  tick('<span class="req">&gt; GET /api/graph</span> · '+graph.counts.core_tools+' core tools · '+graph.counts.types+' types · '+graph.counts.edges+' edges · <span class="org">live from hydradb</span>');
+  tick('&gt; GET /api/benchmark · preload '+fmt(bench.arm_a_preload.tokens_per_task)+' tok · vector chain '+bench.arm_b_vector_topk.tasks_with_full_chain+'/20 · graph '+bench.arm_c_graph.chain_accuracy_exact+'/20');
+  tick('&gt; console ready · '+graph.counts.distractors+' distractor tools in catalog (retrieval noise)');
+  // deep link: ?task=t04&role=support_agent&run=1 (&instant=1 settles at once)
+  const q = new URLSearchParams(location.search);
+  S.instant = q.get('instant') === '1';
+  if(q.get('task') && S.taskOf[q.get('task')]) selectTask(q.get('task'), !q.get('role'));
+  if(q.get('role') && S.roles.includes(q.get('role'))) selectRole(q.get('role'));
+  if(['graph', 'evidence'].includes(q.get('view'))) showView(q.get('view'));
+  if(q.get('run')) runTask();
+}
+/* ---------------- LIVE AGENT FEED: external MCP calls ----------------
+   The console's own runs go through /api/find_tools; this feed is the
+   OTHER door — real agents calling the MCP server (app/mcp_server.py),
+   which logs every tools/call to results/agent-calls.jsonl. */
+function afTime(iso){
+  const d = new Date(iso);
+  return isNaN(d) ? '—' : d.toTimeString().slice(0, 8);
+}
+function afBody(e){
+  const r = e.result || {}, a = e.args || {};
+  if(e.tool === 'find_tools'){
+    if(r.refused) return '<span class="afref">✕ REFUSED</span> blocked at <b>' +
+      esc(r.blocked_tool || '?') + '</b> · missing scope <b>' +
+      esc(r.missing_scope || '?') + '</b> · role ' + esc(a.role || '');
+    if(r.error || !r.chain) return '<span class="afref">no chain</span> — ' +
+      esc(r.error || 'no route') + ' · ' + esc(a.start_type || '') +
+      ' → ' + esc(a.goal_type || '');
+    return (r.chain || []).map(esc).join(' → ') + ' · <b>' +
+      (r.tokens != null ? r.tokens : '—') + ' tok</b>' +
+      (a.entity_name ? ' · ' + esc(a.entity_name) : '');
+  }
+  if(e.tool === 'resolve_entity'){
+    if(!r.resolved) return 'no entity named <b>' + esc(a.name || '') +
+      '</b> in the graph';
+    return '<b>' + esc(r.resolved) + '</b> → ' + esc(r.ref || '') +
+      ' · ' + esc(r.kind || '');
+  }
+  if(e.tool === 'report_outcome'){
+    const ch = a.chain || [];
+    return (r.success ? '✓ success' : '✕ failure') + ' · ' +
+      (ch.length ? esc(ch[0]) + ' → ' + esc(ch[ch.length - 1]) : '—') +
+      ' · ' + (r.edges != null ? r.edges : 0) + ' edges reweighted';
+  }
+  return '';
+}
+async function pollFeed(){
+  try{
+    const calls = await getJSON('/api/agent_feed');
+    const box = $('afrows');
+    if(!box) return;
+    if(!calls.length){
+      box.innerHTML = '<div id="afempty">No external agent calls yet — connect an agent via MCP to see it work here.</div>';
+      return;
+    }
+    box.innerHTML = calls.slice(0, 5).map(e =>
+      '<div class="afrow"><span class="aft">' + afTime(e.ts) +
+      '</span><span class="aftool">' + esc(e.tool) +
+      '</span><span class="afbody">' + afBody(e) + '</span></div>').join('');
+  }catch(err){ /* the feed is best-effort; the console keeps working */ }
+}
+pollFeed();
+setInterval(pollFeed, 4000);
+
+$('runbtn').onclick = runTask;
+let rzT;
+window.addEventListener('resize', () => {
+  clearTimeout(rzT);
+  rzT = setTimeout(() => {
+    if(S.view === 'graph'){
+      S.graphSized = false;
+      renderGraph();
+      if(S.lastRes && S.lastTask) animatePath(S.lastRes, S.lastTask, true);
+    } else {
+      S.graphSized = false;
+    }
+  }, 220);
+});
+init().catch(e => {
+  tick('<span class="red">&lt; BOOT ERROR</span> '+esc(String(e)));
+  $('result-line').textContent = 'Failed to load live data: '+String(e);
+  $('result-line').className = 'stop';
+});
+</script>
+</body>
+</html>

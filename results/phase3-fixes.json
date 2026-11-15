@@ -1,0 +1,675 @@
+{
+ "summary": {
+  "tasks": 20,
+  "chain_accuracy_set": "20/20",
+  "chain_accuracy_exact_order": "20/20",
+  "refusals": "3/3",
+  "avg_tokens_loaded": 253.7,
+  "preload_tokens_all_329": 27000,
+  "token_saving_pct": 99.06,
+  "avg_round_trips": 7.35,
+  "methods": {
+   "mspaths": 13,
+   "resolver": 7
+  },
+  "outcome_weights_reset": 0
+ },
+ "tasks": [
+  {
+   "id": "t01",
+   "role": "support_agent",
+   "start": "CustomerRef",
+   "goal": "Receipt",
+   "expected_chain": [
+    "find_charge",
+    "issue_refund",
+    "send_receipt"
+   ],
+   "chain": [
+    "find_charge",
+    "issue_refund",
+    "send_receipt"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 258,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 2,
+    "weights": {
+     "find_charge->issue_refund": 1,
+     "issue_refund->send_receipt": 1
+    },
+    "round_trips": 7
+   }
+  },
+  {
+   "id": "t02",
+   "role": "support_agent",
+   "start": "CustomerRef",
+   "goal": "Chargeback",
+   "expected_chain": [
+    "find_charge",
+    "chargeback_lookup"
+   ],
+   "chain": [
+    "find_charge",
+    "chargeback_lookup"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 172,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "find_charge->chargeback_lookup": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t03",
+   "role": "finance_agent",
+   "start": "CompanyName",
+   "goal": "SentMail",
+   "expected_chain": [
+    "lookup_customer",
+    "list_invoices",
+    "get_invoice",
+    "invoice_pdf",
+    "find_contact",
+    "send_email"
+   ],
+   "chain": [
+    "lookup_customer",
+    "list_invoices",
+    "get_invoice",
+    "invoice_pdf",
+    "find_contact",
+    "send_email"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 494,
+   "round_trips": 8,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 5,
+    "weights": {
+     "lookup_customer->list_invoices": 1,
+     "list_invoices->get_invoice": 1,
+     "get_invoice->invoice_pdf": 1,
+     "invoice_pdf->find_contact": 1,
+     "find_contact->send_email": 1
+    },
+    "round_trips": 16
+   }
+  },
+  {
+   "id": "t04",
+   "role": "finance_admin",
+   "start": "CompanyName",
+   "goal": "VoidedInvoice",
+   "expected_chain": [
+    "lookup_customer",
+    "list_invoices",
+    "get_invoice",
+    "void_invoice"
+   ],
+   "chain": [
+    "lookup_customer",
+    "list_invoices",
+    "get_invoice",
+    "void_invoice"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 338,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 3,
+    "weights": {
+     "lookup_customer->list_invoices": 2,
+     "list_invoices->get_invoice": 2,
+     "get_invoice->void_invoice": 1
+    },
+    "round_trips": 10
+   }
+  },
+  {
+   "id": "t05",
+   "role": "support_agent",
+   "start": "EmailAddr",
+   "goal": "Charge",
+   "expected_chain": [
+    "create_customer",
+    "find_charge"
+   ],
+   "chain": [
+    "create_customer",
+    "find_charge"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 172,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "create_customer->find_charge": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t06",
+   "role": "dev_agent",
+   "start": "RepoName",
+   "goal": "Issue",
+   "expected_chain": [
+    "search_repo",
+    "create_issue"
+   ],
+   "chain": [
+    "search_repo",
+    "create_issue"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "search_repo->create_issue": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t07",
+   "role": "dev_admin",
+   "start": "RepoName",
+   "goal": "Merged",
+   "expected_chain": [
+    "search_repo",
+    "open_pr",
+    "merge_pr"
+   ],
+   "chain": [
+    "search_repo",
+    "open_pr",
+    "merge_pr"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 246,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 2,
+    "weights": {
+     "search_repo->open_pr": 1,
+     "open_pr->merge_pr": 1
+    },
+    "round_trips": 7
+   }
+  },
+  {
+   "id": "t08",
+   "role": "dev_admin",
+   "start": "CompanyName",
+   "goal": "Invited",
+   "expected_chain": [
+    "lookup_customer",
+    "find_contact",
+    "search_repo",
+    "invite_collaborator"
+   ],
+   "chain": [
+    "lookup_customer",
+    "find_contact",
+    "search_repo",
+    "invite_collaborator"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 340,
+   "round_trips": 8,
+   "supplied_inputs": [
+    "Repo"
+   ],
+   "report_outcome": {
+    "edges": 3,
+    "weights": {
+     "lookup_customer->find_contact": 1,
+     "find_contact->search_repo": 1,
+     "search_repo->invite_collaborator": 1
+    },
+    "round_trips": 10
+   }
+  },
+  {
+   "id": "t09",
+   "role": "ops_agent",
+   "start": "TeamName",
+   "goal": "Message",
+   "expected_chain": [
+    "find_team",
+    "find_slot",
+    "create_event",
+    "post_message"
+   ],
+   "chain": [
+    "find_team",
+    "find_slot",
+    "create_event",
+    "post_message"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 330,
+   "round_trips": 8,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 3,
+    "weights": {
+     "find_team->find_slot": 1,
+     "find_slot->create_event": 1,
+     "create_event->post_message": 1
+    },
+    "round_trips": 10
+   }
+  },
+  {
+   "id": "t10",
+   "role": "ops_agent",
+   "start": "TeamName",
+   "goal": "Cancelled",
+   "expected_chain": [
+    "find_team",
+    "find_slot",
+    "create_event",
+    "cancel_event"
+   ],
+   "chain": [
+    "find_team",
+    "find_slot",
+    "create_event",
+    "cancel_event"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 328,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 3,
+    "weights": {
+     "find_team->find_slot": 2,
+     "find_slot->create_event": 2,
+     "create_event->cancel_event": 1
+    },
+    "round_trips": 10
+   }
+  },
+  {
+   "id": "t11",
+   "role": "finance_agent",
+   "start": "CompanyName",
+   "goal": "Shared",
+   "expected_chain": [
+    "lookup_customer",
+    "find_contact",
+    "search_drive",
+    "get_file",
+    "share_file"
+   ],
+   "chain": [
+    "lookup_customer",
+    "find_contact",
+    "search_drive",
+    "get_file",
+    "share_file"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 422,
+   "round_trips": 8,
+   "supplied_inputs": [
+    "FileRef"
+   ],
+   "report_outcome": {
+    "edges": 4,
+    "weights": {
+     "lookup_customer->find_contact": 2,
+     "find_contact->search_drive": 1,
+     "search_drive->get_file": 1,
+     "get_file->share_file": 1
+    },
+    "round_trips": 13
+   }
+  },
+  {
+   "id": "t12",
+   "role": "ops_agent",
+   "start": "DocText",
+   "goal": "Summary",
+   "expected_chain": [
+    "search_drive",
+    "summarize_doc"
+   ],
+   "chain": [
+    "search_drive",
+    "summarize_doc"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 164,
+   "round_trips": 8,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "search_drive->summarize_doc": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t13",
+   "role": "finance_admin",
+   "start": "CompanyName",
+   "goal": "SignedPdf",
+   "expected_chain": [
+    "lookup_customer",
+    "list_invoices",
+    "get_invoice",
+    "invoice_pdf",
+    "sign_pdf"
+   ],
+   "chain": [
+    "lookup_customer",
+    "list_invoices",
+    "get_invoice",
+    "invoice_pdf",
+    "sign_pdf"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 414,
+   "round_trips": 8,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 4,
+    "weights": {
+     "lookup_customer->list_invoices": 3,
+     "list_invoices->get_invoice": 3,
+     "get_invoice->invoice_pdf": 2,
+     "invoice_pdf->sign_pdf": 1
+    },
+    "round_trips": 13
+   }
+  },
+  {
+   "id": "t14",
+   "role": "support_agent",
+   "start": "TicketRef",
+   "goal": "Escalated",
+   "expected_chain": [
+    "get_ticket",
+    "escalate_ticket"
+   ],
+   "chain": [
+    "get_ticket",
+    "escalate_ticket"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "get_ticket->escalate_ticket": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t15",
+   "role": "support_agent",
+   "start": "TicketRef",
+   "goal": "Closed",
+   "expected_chain": [
+    "get_ticket",
+    "close_ticket"
+   ],
+   "chain": [
+    "get_ticket",
+    "close_ticket"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "get_ticket->close_ticket": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t16",
+   "role": "hr_agent",
+   "start": "EmailAddr",
+   "goal": "LaptopAssigned",
+   "expected_chain": [
+    "create_employee",
+    "assign_laptop"
+   ],
+   "chain": [
+    "create_employee",
+    "assign_laptop"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "create_employee->assign_laptop": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t17",
+   "role": "hr_agent",
+   "start": "EmailAddr",
+   "goal": "Onboarding",
+   "expected_chain": [
+    "create_employee",
+    "book_onboarding"
+   ],
+   "chain": [
+    "create_employee",
+    "book_onboarding"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "create_employee->book_onboarding": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t18",
+   "role": "sales_agent",
+   "start": "CompanyName",
+   "goal": "DealUpdated",
+   "expected_chain": [
+    "find_deal",
+    "update_deal"
+   ],
+   "chain": [
+    "find_deal",
+    "update_deal"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "find_deal->update_deal": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t19",
+   "role": "ops_agent",
+   "start": "DocText",
+   "goal": "Archived",
+   "expected_chain": [
+    "search_mail",
+    "archive_thread"
+   ],
+   "chain": [
+    "search_mail",
+    "archive_thread"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "mspaths",
+   "tokens_loaded": 164,
+   "round_trips": 7,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 1,
+    "weights": {
+     "search_mail->archive_thread": 1
+    },
+    "round_trips": 4
+   }
+  },
+  {
+   "id": "t20",
+   "role": "hr_agent",
+   "start": "DocText",
+   "goal": "SentMail",
+   "expected_chain": [
+    "search_drive",
+    "summarize_doc",
+    "send_email_text"
+   ],
+   "chain": [
+    "search_drive",
+    "summarize_doc",
+    "send_email_text"
+   ],
+   "exact_order": true,
+   "set_match": true,
+   "refused": false,
+   "method": "resolver",
+   "tokens_loaded": 248,
+   "round_trips": 8,
+   "supplied_inputs": [],
+   "report_outcome": {
+    "edges": 2,
+    "weights": {
+     "search_drive->summarize_doc": 2,
+     "summarize_doc->send_email_text": 1
+    },
+    "round_trips": 7
+   }
+  }
+ ],
+ "refusals": [
+  {
+   "id": "t04",
+   "run_as": "support_agent",
+   "expected_missing_scope": "payments:admin",
+   "refused": true,
+   "blocked_tool": "void_invoice",
+   "missing_scope": "payments:admin",
+   "correct": true
+  },
+  {
+   "id": "t07",
+   "run_as": "dev_agent",
+   "expected_missing_scope": "github:admin",
+   "refused": true,
+   "blocked_tool": "merge_pr",
+   "missing_scope": "github:admin",
+   "correct": true
+  },
+  {
+   "id": "t13",
+   "run_as": "finance_agent",
+   "expected_missing_scope": "misc:admin",
+   "refused": true,
+   "blocked_tool": "sign_pdf",
+   "missing_scope": "misc:admin",
+   "correct": true
+  }
+ ]
+}

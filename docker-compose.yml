@@ -1,0 +1,73 @@
+# Waypoint — docker-compose.yml
+#
+# *** UNTESTED — READ BEFORE USE ***
+# Docker was unavailable on the machine Waypoint was built and verified
+# on, so this compose file has never been run. It is written from the
+# HydraDB engine's published image spec:
+#   image:      ghcr.io/hydra-db/hydradb:0.4.0
+#               (published by the engine repo's .github/workflows/
+#               container.yml with semver tags; charts/hydradb Chart.yaml
+#               appVersion is 0.4.0; the image's entrypoint is graph-node
+#               and it is configured entirely through GRAPH_* env vars,
+#               the same ones run.sh sets for the bare-metal node)
+# The TESTED install path is the scripted one: ./setup.sh && ./run.sh
+# (see README "Install"). Treat this file as a starting point, not a
+# verified artifact.
+#
+# Before `docker compose up`:
+#   mkdir -p docker
+#   head -c 48 /dev/urandom | base64 | tr -d '/+=\n' | head -c 43 > docker/token.txt
+#   chmod 644 docker/token.txt   # the hydradb container runs as uid 10001
+# The same token file is mounted into both services: the node reads it
+# via GRAPH_AUTH_TOKEN_FILE, and the app reads it at the fixed path
+# app/client.py expects (~/workspace/hydradb-run/token.txt, here under
+# the app image's root home).
+
+services:
+  hydradb:
+    image: ghcr.io/hydra-db/hydradb:0.4.0
+    environment:
+      CLOUD_PROVIDER: local
+      LOCAL_PATH: /data
+      GRAPH_NAMESPACE: local
+      GRAPH_ID: default
+      GRAPH_CELL_ID: cell-0
+      GRAPH_CELLS: cell-0
+      GRAPH_DATA_PATH: data
+      GRAPH_ALLOW_PLAINTEXT: "true"
+      GRAPH_AUTH_TOKEN_FILE: /token.txt
+      GRAPH_DATA_CACHE_BYTES: "67108864"
+      GRAPH_DATA_CACHE_DIR: /var/cache/slatedb
+      GRAPH_NODE_ID: node-0
+      GRAPH_BOLT_ADDR: 0.0.0.0:17687
+      GRAPH_ADVERTISED_BOLT_ADDR: 127.0.0.1:17687
+      GRAPH_BOLT_NODE_ADDRESSES: node-0=127.0.0.1:17687
+      GRAPH_HTTP_ADDR: 0.0.0.0:18443
+      GRAPH_ADMIN_ADDR: 0.0.0.0:19091
+      RUST_MIN_STACK: "33554432"
+      RUST_LOG: info
+    ports:
+      - "127.0.0.1:17687:17687"
+      - "127.0.0.1:18443:18443"
+      - "127.0.0.1:19091:19091"
+    volumes:
+      - hydra-data:/data
+      - ./docker/token.txt:/token.txt:ro
+
+  app:
+    build: .
+    # app/client.py talks to the node at localhost:18443 (fixed), so the
+    # app shares the host network and reaches the node's published port.
+    network_mode: host
+    depends_on:
+      - hydradb
+    volumes:
+      - ./docker/token.txt:/root/workspace/hydradb-run/token.txt:ro
+    # Seed + ingest are idempotent; they run on every container start.
+    command: >
+      sh -c "python3 app/seed.py &&
+             python3 app/ingest.py examples/real-mcp &&
+             python3 app/server.py"
+
+volumes:
+  hydra-data:

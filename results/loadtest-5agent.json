@@ -1,0 +1,94 @@
+{
+ "summary": {
+  "agents_concurrent": 5,
+  "rounds_per_agent": 3,
+  "total_calls": 15,
+  "errors": 0,
+  "error_strings": [],
+  "wall_time_s": 47.56,
+  "throughput_calls_per_s": 0.315,
+  "latency_ms": {
+   "mean": 15288.6,
+   "p50": 14596.8,
+   "max": 19962.0
+  },
+  "note": "supplementary low-concurrency context run for the 50-agent load test"
+ },
+ "calls": [
+  {
+   "task": "t07",
+   "ms": 13538.9,
+   "error": null
+  },
+  {
+   "task": "t10",
+   "ms": 13746.7,
+   "error": null
+  },
+  {
+   "task": "t04",
+   "ms": 13859.6,
+   "error": null
+  },
+  {
+   "task": "t01",
+   "ms": 13948.0,
+   "error": null
+  },
+  {
+   "task": "t13",
+   "ms": 19962.0,
+   "error": null
+  },
+  {
+   "task": "t05",
+   "ms": 13018.7,
+   "error": null
+  },
+  {
+   "task": "t02",
+   "ms": 14596.8,
+   "error": null
+  },
+  {
+   "task": "t08",
+   "ms": 17922.8,
+   "error": null
+  },
+  {
+   "task": "t11",
+   "ms": 17993.2,
+   "error": null
+  },
+  {
+   "task": "t14",
+   "ms": 14702.8,
+   "error": null
+  },
+  {
+   "task": "t06",
+   "ms": 13777.0,
+   "error": null
+  },
+  {
+   "task": "t03",
+   "ms": 18114.1,
+   "error": null
+  },
+  {
+   "task": "t15",
+   "ms": 12410.8,
+   "error": null
+  },
+  {
+   "task": "t09",
+   "ms": 15915.0,
+   "error": null
+  },
+  {
+   "task": "t12",
+   "ms": 15822.5,
+   "error": null
+  }
+ ]
+}

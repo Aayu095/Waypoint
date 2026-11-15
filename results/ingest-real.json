@@ -1,0 +1,133 @@
+{
+ "ingestion": {
+  "per_server": {
+   "filesystem": {
+    "tools": 14,
+    "new": 0
+   },
+   "memory": {
+    "tools": 9,
+    "new": 0
+   }
+  },
+  "tools": 23,
+  "new_tools": 0,
+  "datatypes": 25,
+  "scopes": 4,
+  "servers": [
+   "filesystem",
+   "memory"
+  ]
+ },
+ "graph_counts_before": {
+  "nodes:Tool": 352,
+  "nodes:DataType": 80,
+  "nodes:Scope": 29,
+  "nodes:MCPServer": 14,
+  "nodes:Entity": 7,
+  "edges:HOSTED_BY": 352,
+  "edges:INPUT_TO": 363,
+  "edges:OUTPUT": 352,
+  "edges:REQUIRES": 24,
+  "edges:REQUIRES_SCOPE": 352,
+  "edges:IS_TYPE": 7,
+  "edges:CO_USED_WITH": 61,
+  "ingested_tools": 23
+ },
+ "graph_counts_after": {
+  "nodes:Tool": 352,
+  "nodes:DataType": 80,
+  "nodes:Scope": 29,
+  "nodes:MCPServer": 14,
+  "nodes:Entity": 7,
+  "edges:HOSTED_BY": 352,
+  "edges:INPUT_TO": 363,
+  "edges:OUTPUT": 352,
+  "edges:REQUIRES": 24,
+  "edges:REQUIRES_SCOPE": 352,
+  "edges:IS_TYPE": 7,
+  "edges:CO_USED_WITH": 61,
+  "ingested_tools": 23
+ },
+ "idempotency": {
+  "second_run_new_tools": 0,
+  "counts_unchanged": true,
+  "pass": true
+ },
+ "tasks": [
+  {
+   "id": "r1",
+   "text": "Copy a file: read its text content, then write that content to the destination file",
+   "start": "FilePath",
+   "goal": "WriteFileOutput",
+   "role": "fs_agent",
+   "refused": false,
+   "chain": [
+    "read_file",
+    "write_file"
+   ],
+   "tokens_loaded": 230,
+   "round_trips": 7,
+   "db_queries": 6,
+   "cache_hit": false,
+   "method": "resolver",
+   "supplied_inputs": [],
+   "entity": null
+  },
+  {
+   "id": "r2",
+   "text": "List the directories and file paths this agent is allowed to work with",
+   "start": "FilePath",
+   "goal": "FilePathList",
+   "role": "fs_agent",
+   "refused": false,
+   "chain": [
+    "list_allowed_directories"
+   ],
+   "tokens_loaded": 110,
+   "round_trips": 7,
+   "db_queries": 1,
+   "cache_hit": true,
+   "method": "resolver",
+   "supplied_inputs": [],
+   "entity": null
+  },
+  {
+   "id": "r3",
+   "text": "Look up what the knowledge graph holds for a query",
+   "start": "String",
+   "goal": "KnowledgeGraph",
+   "role": "memory_agent",
+   "refused": false,
+   "chain": [
+    "search_nodes"
+   ],
+   "tokens_loaded": 122,
+   "round_trips": 6,
+   "db_queries": 1,
+   "cache_hit": true,
+   "method": "mspaths",
+   "supplied_inputs": [],
+   "entity": null
+  }
+ ],
+ "refusal": {
+  "task": "r1",
+  "run_as": "fs_reader",
+  "expected_blocked_tool": "write_file",
+  "expected_missing_scope": "fs:write",
+  "refused": true,
+  "blocked_tool": "write_file",
+  "missing_scope": "fs:write",
+  "role": "fs_reader",
+  "chain": [
+   "read_file",
+   "write_file"
+  ],
+  "method": "resolver",
+  "round_trips": 7,
+  "db_queries": 1,
+  "cache_hit": true,
+  "correct": true
+ }
+}

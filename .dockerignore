@@ -1,0 +1,8 @@
+.git
+**/__pycache__
+*.pyc
+data/store
+data/store.cache
+data/store.run
+results/shots
+docker/token.txt

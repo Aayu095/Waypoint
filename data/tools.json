@@ -1,0 +1,5977 @@
+[
+ {
+  "id": 100,
+  "key": "find_charge",
+  "server": "payments",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Charge"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Find a payment charge for a customer so a refund or dispute can reference it.",
+  "tokens": 90,
+  "core": true
+ },
+ {
+  "id": 101,
+  "key": "issue_refund",
+  "server": "payments",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Refund"
+  ],
+  "scopes": [
+   "payments:write"
+  ],
+  "requires": [
+   "find_charge"
+  ],
+  "desc": "Issue a refund against an existing charge. Refund only; does not notify the customer.",
+  "tokens": 88,
+  "core": true
+ },
+ {
+  "id": 102,
+  "key": "send_receipt",
+  "server": "payments",
+  "consumes": [
+   "Refund"
+  ],
+  "produces": [
+   "Receipt"
+  ],
+  "scopes": [
+   "payments:write"
+  ],
+  "requires": [
+   "issue_refund"
+  ],
+  "desc": "Send the customer a receipt for a completed refund transaction.",
+  "tokens": 80,
+  "core": true
+ },
+ {
+  "id": 103,
+  "key": "chargeback_lookup",
+  "server": "payments",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Chargeback"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [
+   "find_charge"
+  ],
+  "desc": "Tool chargeback_lookup on the payments server. Consumes Charge and produces Chargeback.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 104,
+  "key": "create_customer",
+  "server": "payments",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "CustomerRef"
+  ],
+  "scopes": [
+   "payments:write"
+  ],
+  "requires": [],
+  "desc": "Tool create_customer on the payments server. Consumes EmailAddr and produces CustomerRef.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 105,
+  "key": "list_invoices",
+  "server": "payments",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "InvoiceList"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool list_invoices on the payments server. Consumes CustomerRef and produces InvoiceList.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 106,
+  "key": "get_invoice",
+  "server": "payments",
+  "consumes": [
+   "InvoiceList"
+  ],
+  "produces": [
+   "Invoice"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [
+   "list_invoices"
+  ],
+  "desc": "Fetch a single invoice record from a customer's invoice list.",
+  "tokens": 80,
+  "core": true
+ },
+ {
+  "id": 107,
+  "key": "invoice_pdf",
+  "server": "payments",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "InvoicePdf"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [
+   "get_invoice"
+  ],
+  "desc": "Render an invoice record as a PDF document.",
+  "tokens": 76,
+  "core": true
+ },
+ {
+  "id": 108,
+  "key": "void_invoice",
+  "server": "payments",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "VoidedInvoice"
+  ],
+  "scopes": [
+   "payments:admin"
+  ],
+  "requires": [
+   "get_invoice"
+  ],
+  "desc": "Tool void_invoice on the payments server. Consumes Invoice and produces VoidedInvoice.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 109,
+  "key": "lookup_customer",
+  "server": "crm",
+  "consumes": [
+   "CompanyName"
+  ],
+  "produces": [
+   "CustomerRef"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Look up a customer record in the CRM from a company name to get its customer reference.",
+  "tokens": 94,
+  "core": true
+ },
+ {
+  "id": 110,
+  "key": "find_contact",
+  "server": "crm",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "EmailAddr"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [
+   "lookup_customer"
+  ],
+  "desc": "Find the finance contact email address for a CRM customer.",
+  "tokens": 80,
+  "core": true
+ },
+ {
+  "id": 111,
+  "key": "find_deal",
+  "server": "crm",
+  "consumes": [
+   "CompanyName"
+  ],
+  "produces": [
+   "Deal"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool find_deal on the crm server. Consumes CompanyName and produces Deal.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 112,
+  "key": "update_deal",
+  "server": "crm",
+  "consumes": [
+   "Deal"
+  ],
+  "produces": [
+   "DealUpdated"
+  ],
+  "scopes": [
+   "crm:write"
+  ],
+  "requires": [
+   "find_deal"
+  ],
+  "desc": "Tool update_deal on the crm server. Consumes Deal and produces DealUpdated.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 113,
+  "key": "send_email",
+  "server": "mail",
+  "consumes": [
+   "EmailAddr",
+   "InvoicePdf"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "mail:write"
+  ],
+  "requires": [],
+  "desc": "Send an email with a PDF attachment to an email address.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 114,
+  "key": "send_email_text",
+  "server": "mail",
+  "consumes": [
+   "EmailAddr",
+   "Summary"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "mail:write"
+  ],
+  "requires": [],
+  "desc": "Tool send_email_text on the mail server. Consumes EmailAddr, Summary and produces SentMail.",
+  "tokens": 84,
+  "core": true
+ },
+ {
+  "id": 115,
+  "key": "search_mail",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "MailList"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_mail on the mail server. Consumes DocText and produces MailList.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 116,
+  "key": "archive_thread",
+  "server": "mail",
+  "consumes": [
+   "MailList"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "mail:write"
+  ],
+  "requires": [
+   "search_mail"
+  ],
+  "desc": "Tool archive_thread on the mail server. Consumes MailList and produces Archived.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 117,
+  "key": "search_drive",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_drive on the drive server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 118,
+  "key": "get_file",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "InvoicePdf"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [
+   "search_drive"
+  ],
+  "desc": "Tool get_file on the drive server. Consumes FileRef and produces InvoicePdf.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 119,
+  "key": "share_file",
+  "server": "drive",
+  "consumes": [
+   "FileRef",
+   "EmailAddr"
+  ],
+  "produces": [
+   "Shared"
+  ],
+  "scopes": [
+   "drive:write"
+  ],
+  "requires": [
+   "get_file"
+  ],
+  "desc": "Tool share_file on the drive server. Consumes FileRef, EmailAddr and produces Shared.",
+  "tokens": 84,
+  "core": true
+ },
+ {
+  "id": 120,
+  "key": "summarize_doc",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [
+   "search_drive"
+  ],
+  "desc": "Tool summarize_doc on the drive server. Consumes FileRef and produces Summary.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 121,
+  "key": "search_repo",
+  "server": "github",
+  "consumes": [
+   "RepoName"
+  ],
+  "produces": [
+   "Repo"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_repo on the github server. Consumes RepoName and produces Repo.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 122,
+  "key": "create_issue",
+  "server": "github",
+  "consumes": [
+   "Repo"
+  ],
+  "produces": [
+   "Issue"
+  ],
+  "scopes": [
+   "github:write"
+  ],
+  "requires": [
+   "search_repo"
+  ],
+  "desc": "Tool create_issue on the github server. Consumes Repo and produces Issue.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 123,
+  "key": "open_pr",
+  "server": "github",
+  "consumes": [
+   "Repo"
+  ],
+  "produces": [
+   "PullRequest"
+  ],
+  "scopes": [
+   "github:write"
+  ],
+  "requires": [
+   "search_repo"
+  ],
+  "desc": "Tool open_pr on the github server. Consumes Repo and produces PullRequest.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 124,
+  "key": "merge_pr",
+  "server": "github",
+  "consumes": [
+   "PullRequest"
+  ],
+  "produces": [
+   "Merged"
+  ],
+  "scopes": [
+   "github:admin"
+  ],
+  "requires": [
+   "open_pr"
+  ],
+  "desc": "Tool merge_pr on the github server. Consumes PullRequest and produces Merged.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 125,
+  "key": "invite_collaborator",
+  "server": "github",
+  "consumes": [
+   "Repo",
+   "EmailAddr"
+  ],
+  "produces": [
+   "Invited"
+  ],
+  "scopes": [
+   "github:admin"
+  ],
+  "requires": [
+   "search_repo"
+  ],
+  "desc": "Tool invite_collaborator on the github server. Consumes Repo, EmailAddr and produces Invited.",
+  "tokens": 84,
+  "core": true
+ },
+ {
+  "id": 126,
+  "key": "find_slot",
+  "server": "calendar",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Slot"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool find_slot on the calendar server. Consumes TeamRef and produces Slot.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 127,
+  "key": "create_event",
+  "server": "calendar",
+  "consumes": [
+   "Slot"
+  ],
+  "produces": [
+   "Event"
+  ],
+  "scopes": [
+   "calendar:write"
+  ],
+  "requires": [
+   "find_slot"
+  ],
+  "desc": "Tool create_event on the calendar server. Consumes Slot and produces Event.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 128,
+  "key": "cancel_event",
+  "server": "calendar",
+  "consumes": [
+   "Event"
+  ],
+  "produces": [
+   "Cancelled"
+  ],
+  "scopes": [
+   "calendar:write"
+  ],
+  "requires": [
+   "create_event"
+  ],
+  "desc": "Tool cancel_event on the calendar server. Consumes Event and produces Cancelled.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 129,
+  "key": "find_team",
+  "server": "chat",
+  "consumes": [
+   "TeamName"
+  ],
+  "produces": [
+   "TeamRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool find_team on the chat server. Consumes TeamName and produces TeamRef.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 130,
+  "key": "post_message",
+  "server": "chat",
+  "consumes": [
+   "TeamRef",
+   "Event"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "chat:write"
+  ],
+  "requires": [
+   "find_team"
+  ],
+  "desc": "Tool post_message on the chat server. Consumes TeamRef, Event and produces Message.",
+  "tokens": 84,
+  "core": true
+ },
+ {
+  "id": 131,
+  "key": "create_channel",
+  "server": "chat",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Channel"
+  ],
+  "scopes": [
+   "chat:write"
+  ],
+  "requires": [
+   "find_team"
+  ],
+  "desc": "Tool create_channel on the chat server. Consumes TeamRef and produces Channel.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 132,
+  "key": "get_ticket",
+  "server": "support",
+  "consumes": [
+   "TicketRef"
+  ],
+  "produces": [
+   "Ticket"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool get_ticket on the support server. Consumes TicketRef and produces Ticket.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 133,
+  "key": "escalate_ticket",
+  "server": "support",
+  "consumes": [
+   "Ticket"
+  ],
+  "produces": [
+   "Escalated"
+  ],
+  "scopes": [
+   "support:write"
+  ],
+  "requires": [
+   "get_ticket"
+  ],
+  "desc": "Tool escalate_ticket on the support server. Consumes Ticket and produces Escalated.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 134,
+  "key": "close_ticket",
+  "server": "support",
+  "consumes": [
+   "Ticket"
+  ],
+  "produces": [
+   "Closed"
+  ],
+  "scopes": [
+   "support:write"
+  ],
+  "requires": [
+   "get_ticket"
+  ],
+  "desc": "Tool close_ticket on the support server. Consumes Ticket and produces Closed.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 135,
+  "key": "create_employee",
+  "server": "hr",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "Employee"
+  ],
+  "scopes": [
+   "hr:write"
+  ],
+  "requires": [],
+  "desc": "Tool create_employee on the hr server. Consumes EmailAddr and produces Employee.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 136,
+  "key": "assign_laptop",
+  "server": "hr",
+  "consumes": [
+   "Employee"
+  ],
+  "produces": [
+   "LaptopAssigned"
+  ],
+  "scopes": [
+   "hr:write"
+  ],
+  "requires": [
+   "create_employee"
+  ],
+  "desc": "Tool assign_laptop on the hr server. Consumes Employee and produces LaptopAssigned.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 137,
+  "key": "book_onboarding",
+  "server": "hr",
+  "consumes": [
+   "Employee"
+  ],
+  "produces": [
+   "Onboarding"
+  ],
+  "scopes": [
+   "hr:write"
+  ],
+  "requires": [
+   "create_employee"
+  ],
+  "desc": "Tool book_onboarding on the hr server. Consumes Employee and produces Onboarding.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 138,
+  "key": "translate_text",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Translated"
+  ],
+  "scopes": [
+   "misc:write"
+  ],
+  "requires": [],
+  "desc": "Tool translate_text on the misc server. Consumes DocText and produces Translated.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 139,
+  "key": "ocr_scan",
+  "server": "misc",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "DocText"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool ocr_scan on the misc server. Consumes FileRef and produces DocText.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 140,
+  "key": "sign_pdf",
+  "server": "misc",
+  "consumes": [
+   "InvoicePdf"
+  ],
+  "produces": [
+   "SignedPdf"
+  ],
+  "scopes": [
+   "misc:admin"
+  ],
+  "requires": [],
+  "desc": "Tool sign_pdf on the misc server. Consumes InvoicePdf and produces SignedPdf.",
+  "tokens": 82,
+  "core": true
+ },
+ {
+  "id": 200,
+  "key": "refund_status_billing_payments",
+  "server": "payments",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_billing_payments on the payments server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 201,
+  "key": "backup_billing_payments_data",
+  "server": "payments",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_billing_payments_data on the payments server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 202,
+  "key": "export_sales_payments_report",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_sales_payments_report on the payments server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 203,
+  "key": "charge_report_sales_payments",
+  "server": "payments",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_sales_payments on the payments server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 204,
+  "key": "archive_vendor_payments_items",
+  "server": "payments",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_vendor_payments_items on the payments server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 205,
+  "key": "notify_vendor_payments_team",
+  "server": "payments",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_vendor_payments_team on the payments server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 206,
+  "key": "notify_partner_payments_team",
+  "server": "payments",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_partner_payments_team on the payments server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 207,
+  "key": "schedule_partner_payments_job",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_partner_payments_job on the payments server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 208,
+  "key": "charge_report_legacy_payments",
+  "server": "payments",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_legacy_payments on the payments server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 209,
+  "key": "backup_legacy_payments_data",
+  "server": "payments",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_legacy_payments_data on the payments server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 210,
+  "key": "receipt_template_mobile_payments",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_mobile_payments on the payments server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 211,
+  "key": "charge_report_mobile_payments",
+  "server": "payments",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_mobile_payments on the payments server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 212,
+  "key": "rotate_web_payments_keys",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_web_payments_keys on the payments server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 213,
+  "key": "audit_web_payments_log",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_web_payments_log on the payments server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 214,
+  "key": "monitor_internal_payments_queue",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_internal_payments_queue on the payments server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 215,
+  "key": "clean_internal_payments_duplicates",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_internal_payments_duplicates on the payments server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 216,
+  "key": "sync_regional_payments_records",
+  "server": "payments",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_regional_payments_records on the payments server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 217,
+  "key": "export_regional_payments_report",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_regional_payments_report on the payments server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 218,
+  "key": "audit_trial_payments_log",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_trial_payments_log on the payments server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 219,
+  "key": "convert_trial_payments_format",
+  "server": "payments",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_trial_payments_format on the payments server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 220,
+  "key": "notify_enterprise_payments_team",
+  "server": "payments",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_enterprise_payments_team on the payments server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 221,
+  "key": "search_enterprise_payments_archive",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_enterprise_payments_archive on the payments server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 222,
+  "key": "purge_retail_payments_cache",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_retail_payments_cache on the payments server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 223,
+  "key": "export_retail_payments_report",
+  "server": "payments",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "payments:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_retail_payments_report on the payments server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 224,
+  "key": "rotate_billing_crm_keys",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_billing_crm_keys on the crm server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 225,
+  "key": "convert_billing_crm_format",
+  "server": "crm",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_billing_crm_format on the crm server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 226,
+  "key": "invoice_reminder_sales_crm",
+  "server": "crm",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_sales_crm on the crm server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 227,
+  "key": "refund_status_sales_crm",
+  "server": "crm",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_sales_crm on the crm server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 228,
+  "key": "invoice_reminder_vendor_crm",
+  "server": "crm",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_vendor_crm on the crm server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 229,
+  "key": "rotate_vendor_crm_keys",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_vendor_crm_keys on the crm server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 230,
+  "key": "clean_partner_crm_duplicates",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_partner_crm_duplicates on the crm server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 231,
+  "key": "notify_partner_crm_team",
+  "server": "crm",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_partner_crm_team on the crm server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 232,
+  "key": "import_legacy_crm_file",
+  "server": "crm",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_legacy_crm_file on the crm server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 233,
+  "key": "monitor_legacy_crm_queue",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_legacy_crm_queue on the crm server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 234,
+  "key": "archive_mobile_crm_items",
+  "server": "crm",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_mobile_crm_items on the crm server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 235,
+  "key": "email_campaign_mobile_crm",
+  "server": "crm",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_mobile_crm on the crm server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 236,
+  "key": "export_web_crm_report",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_web_crm_report on the crm server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 237,
+  "key": "contact_export_web_crm",
+  "server": "crm",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_web_crm on the crm server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 238,
+  "key": "email_campaign_internal_crm",
+  "server": "crm",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_internal_crm on the crm server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 239,
+  "key": "validate_internal_crm_entry",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_internal_crm_entry on the crm server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 240,
+  "key": "invoice_reminder_regional_crm",
+  "server": "crm",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_regional_crm on the crm server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 241,
+  "key": "clean_regional_crm_duplicates",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_regional_crm_duplicates on the crm server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 242,
+  "key": "check_trial_crm_status",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_trial_crm_status on the crm server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 243,
+  "key": "archive_trial_crm_items",
+  "server": "crm",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_trial_crm_items on the crm server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 244,
+  "key": "schedule_enterprise_crm_job",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_enterprise_crm_job on the crm server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 245,
+  "key": "convert_enterprise_crm_format",
+  "server": "crm",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_enterprise_crm_format on the crm server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 246,
+  "key": "contact_export_retail_crm",
+  "server": "crm",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_retail_crm on the crm server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 247,
+  "key": "check_retail_crm_status",
+  "server": "crm",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "crm:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_retail_crm_status on the crm server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 248,
+  "key": "backup_billing_mail_data",
+  "server": "mail",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_billing_mail_data on the mail server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 249,
+  "key": "audit_billing_mail_log",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_billing_mail_log on the mail server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 250,
+  "key": "fetch_sales_mail_metrics",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_sales_mail_metrics on the mail server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 251,
+  "key": "backup_sales_mail_data",
+  "server": "mail",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_sales_mail_data on the mail server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 252,
+  "key": "update_vendor_mail_settings",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_vendor_mail_settings on the mail server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 253,
+  "key": "purge_vendor_mail_cache",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_vendor_mail_cache on the mail server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 254,
+  "key": "archive_partner_mail_items",
+  "server": "mail",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_partner_mail_items on the mail server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 255,
+  "key": "email_campaign_partner_mail",
+  "server": "mail",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_partner_mail on the mail server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 256,
+  "key": "sync_legacy_mail_records",
+  "server": "mail",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_legacy_mail_records on the mail server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 257,
+  "key": "charge_report_legacy_mail",
+  "server": "mail",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_legacy_mail on the mail server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 258,
+  "key": "import_mobile_mail_file",
+  "server": "mail",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_mobile_mail_file on the mail server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 259,
+  "key": "rotate_mobile_mail_keys",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_mobile_mail_keys on the mail server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 260,
+  "key": "backup_web_mail_data",
+  "server": "mail",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_web_mail_data on the mail server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 261,
+  "key": "fetch_web_mail_metrics",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_web_mail_metrics on the mail server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 262,
+  "key": "audit_internal_mail_log",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_internal_mail_log on the mail server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 263,
+  "key": "rotate_internal_mail_keys",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_internal_mail_keys on the mail server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 264,
+  "key": "generate_regional_mail_summary",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool generate_regional_mail_summary on the mail server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 265,
+  "key": "refund_status_regional_mail",
+  "server": "mail",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_regional_mail on the mail server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 266,
+  "key": "purge_trial_mail_cache",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_trial_mail_cache on the mail server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 267,
+  "key": "update_trial_mail_settings",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_trial_mail_settings on the mail server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 268,
+  "key": "monitor_enterprise_mail_queue",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_enterprise_mail_queue on the mail server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 269,
+  "key": "convert_enterprise_mail_format",
+  "server": "mail",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_enterprise_mail_format on the mail server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 270,
+  "key": "invoice_reminder_retail_mail",
+  "server": "mail",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_retail_mail on the mail server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 271,
+  "key": "audit_retail_mail_log",
+  "server": "mail",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "mail:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_retail_mail_log on the mail server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 272,
+  "key": "sync_billing_drive_records",
+  "server": "drive",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_billing_drive_records on the drive server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 273,
+  "key": "receipt_template_billing_drive",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_billing_drive on the drive server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 274,
+  "key": "notify_sales_drive_team",
+  "server": "drive",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_sales_drive_team on the drive server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 275,
+  "key": "contact_export_sales_drive",
+  "server": "drive",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_sales_drive on the drive server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 276,
+  "key": "generate_vendor_drive_summary",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool generate_vendor_drive_summary on the drive server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 277,
+  "key": "audit_vendor_drive_log",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_vendor_drive_log on the drive server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 278,
+  "key": "notify_partner_drive_team",
+  "server": "drive",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_partner_drive_team on the drive server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 279,
+  "key": "backup_partner_drive_data",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_partner_drive_data on the drive server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 280,
+  "key": "fetch_legacy_drive_metrics",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_legacy_drive_metrics on the drive server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 281,
+  "key": "archive_legacy_drive_items",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_legacy_drive_items on the drive server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 282,
+  "key": "import_mobile_drive_file",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_mobile_drive_file on the drive server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 283,
+  "key": "refund_status_mobile_drive",
+  "server": "drive",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_mobile_drive on the drive server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 284,
+  "key": "update_web_drive_settings",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_web_drive_settings on the drive server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 285,
+  "key": "validate_web_drive_entry",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_web_drive_entry on the drive server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 286,
+  "key": "update_internal_drive_settings",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_internal_drive_settings on the drive server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 287,
+  "key": "convert_internal_drive_format",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_internal_drive_format on the drive server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 288,
+  "key": "receipt_template_regional_drive",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_regional_drive on the drive server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 289,
+  "key": "archive_regional_drive_items",
+  "server": "drive",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_regional_drive_items on the drive server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 290,
+  "key": "invoice_reminder_trial_drive",
+  "server": "drive",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_trial_drive on the drive server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 291,
+  "key": "receipt_template_trial_drive",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_trial_drive on the drive server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 292,
+  "key": "refund_status_enterprise_drive",
+  "server": "drive",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_enterprise_drive on the drive server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 293,
+  "key": "audit_enterprise_drive_log",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_enterprise_drive_log on the drive server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 294,
+  "key": "purge_retail_drive_cache",
+  "server": "drive",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_retail_drive_cache on the drive server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 295,
+  "key": "refund_status_retail_drive",
+  "server": "drive",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "drive:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_retail_drive on the drive server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 296,
+  "key": "validate_billing_github_entry",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_billing_github_entry on the github server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 297,
+  "key": "rotate_billing_github_keys",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_billing_github_keys on the github server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 298,
+  "key": "charge_report_sales_github",
+  "server": "github",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_sales_github on the github server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 299,
+  "key": "notify_sales_github_team",
+  "server": "github",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_sales_github_team on the github server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 300,
+  "key": "validate_vendor_github_entry",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_vendor_github_entry on the github server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 301,
+  "key": "import_vendor_github_file",
+  "server": "github",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_vendor_github_file on the github server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 302,
+  "key": "fetch_partner_github_metrics",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_partner_github_metrics on the github server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 303,
+  "key": "archive_partner_github_items",
+  "server": "github",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_partner_github_items on the github server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 304,
+  "key": "refund_status_legacy_github",
+  "server": "github",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_legacy_github on the github server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 305,
+  "key": "invoice_reminder_legacy_github",
+  "server": "github",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_legacy_github on the github server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 306,
+  "key": "rotate_mobile_github_keys",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_mobile_github_keys on the github server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 307,
+  "key": "notify_mobile_github_team",
+  "server": "github",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_mobile_github_team on the github server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 308,
+  "key": "receipt_template_web_github",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_web_github on the github server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 309,
+  "key": "check_web_github_status",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_web_github_status on the github server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 310,
+  "key": "contact_export_internal_github",
+  "server": "github",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_internal_github on the github server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 311,
+  "key": "sync_internal_github_records",
+  "server": "github",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_internal_github_records on the github server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 312,
+  "key": "notify_regional_github_team",
+  "server": "github",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_regional_github_team on the github server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 313,
+  "key": "sync_regional_github_records",
+  "server": "github",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_regional_github_records on the github server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 314,
+  "key": "email_campaign_trial_github",
+  "server": "github",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_trial_github on the github server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 315,
+  "key": "check_trial_github_status",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_trial_github_status on the github server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 316,
+  "key": "fetch_enterprise_github_metrics",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_enterprise_github_metrics on the github server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 317,
+  "key": "archive_enterprise_github_items",
+  "server": "github",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_enterprise_github_items on the github server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 318,
+  "key": "audit_retail_github_log",
+  "server": "github",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_retail_github_log on the github server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 319,
+  "key": "convert_retail_github_format",
+  "server": "github",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "github:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_retail_github_format on the github server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 320,
+  "key": "monitor_billing_calendar_queue",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_billing_calendar_queue on the calendar server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 321,
+  "key": "invoice_reminder_billing_calendar",
+  "server": "calendar",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_billing_calendar on the calendar server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 322,
+  "key": "check_sales_calendar_status",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_sales_calendar_status on the calendar server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 323,
+  "key": "convert_sales_calendar_format",
+  "server": "calendar",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_sales_calendar_format on the calendar server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 324,
+  "key": "refund_status_vendor_calendar",
+  "server": "calendar",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_vendor_calendar on the calendar server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 325,
+  "key": "tag_vendor_calendar_record",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_vendor_calendar_record on the calendar server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 326,
+  "key": "fetch_partner_calendar_metrics",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_partner_calendar_metrics on the calendar server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 327,
+  "key": "refund_status_partner_calendar",
+  "server": "calendar",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_partner_calendar on the calendar server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 328,
+  "key": "import_legacy_calendar_file",
+  "server": "calendar",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_legacy_calendar_file on the calendar server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 329,
+  "key": "schedule_legacy_calendar_job",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_legacy_calendar_job on the calendar server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 330,
+  "key": "archive_mobile_calendar_items",
+  "server": "calendar",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_mobile_calendar_items on the calendar server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 331,
+  "key": "schedule_mobile_calendar_job",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_mobile_calendar_job on the calendar server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 332,
+  "key": "notify_web_calendar_team",
+  "server": "calendar",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_web_calendar_team on the calendar server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 333,
+  "key": "charge_report_web_calendar",
+  "server": "calendar",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_web_calendar on the calendar server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 334,
+  "key": "rotate_internal_calendar_keys",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_internal_calendar_keys on the calendar server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 335,
+  "key": "archive_internal_calendar_items",
+  "server": "calendar",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_internal_calendar_items on the calendar server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 336,
+  "key": "charge_report_regional_calendar",
+  "server": "calendar",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_regional_calendar on the calendar server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 337,
+  "key": "monitor_regional_calendar_queue",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_regional_calendar_queue on the calendar server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 338,
+  "key": "clean_trial_calendar_duplicates",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_trial_calendar_duplicates on the calendar server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 339,
+  "key": "monitor_trial_calendar_queue",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_trial_calendar_queue on the calendar server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 340,
+  "key": "fetch_enterprise_calendar_metrics",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_enterprise_calendar_metrics on the calendar server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 341,
+  "key": "update_enterprise_calendar_settings",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_enterprise_calendar_settings on the calendar server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 342,
+  "key": "notify_retail_calendar_team",
+  "server": "calendar",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_retail_calendar_team on the calendar server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 343,
+  "key": "schedule_retail_calendar_job",
+  "server": "calendar",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "calendar:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_retail_calendar_job on the calendar server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 344,
+  "key": "search_billing_chat_archive",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_billing_chat_archive on the chat server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 345,
+  "key": "tag_billing_chat_record",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_billing_chat_record on the chat server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 346,
+  "key": "audit_sales_chat_log",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_sales_chat_log on the chat server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 347,
+  "key": "contact_export_sales_chat",
+  "server": "chat",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_sales_chat on the chat server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 348,
+  "key": "sync_vendor_chat_records",
+  "server": "chat",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_vendor_chat_records on the chat server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 349,
+  "key": "backup_vendor_chat_data",
+  "server": "chat",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_vendor_chat_data on the chat server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 350,
+  "key": "schedule_partner_chat_job",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_partner_chat_job on the chat server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 351,
+  "key": "refund_status_partner_chat",
+  "server": "chat",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_partner_chat on the chat server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 352,
+  "key": "validate_legacy_chat_entry",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_legacy_chat_entry on the chat server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 353,
+  "key": "email_campaign_legacy_chat",
+  "server": "chat",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_legacy_chat on the chat server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 354,
+  "key": "receipt_template_mobile_chat",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_mobile_chat on the chat server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 355,
+  "key": "clean_mobile_chat_duplicates",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_mobile_chat_duplicates on the chat server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 356,
+  "key": "purge_web_chat_cache",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_web_chat_cache on the chat server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 357,
+  "key": "audit_web_chat_log",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_web_chat_log on the chat server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 358,
+  "key": "fetch_internal_chat_metrics",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_internal_chat_metrics on the chat server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 359,
+  "key": "purge_internal_chat_cache",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_internal_chat_cache on the chat server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 360,
+  "key": "import_regional_chat_file",
+  "server": "chat",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_regional_chat_file on the chat server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 361,
+  "key": "search_regional_chat_archive",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_regional_chat_archive on the chat server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 362,
+  "key": "archive_trial_chat_items",
+  "server": "chat",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_trial_chat_items on the chat server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 363,
+  "key": "rotate_trial_chat_keys",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_trial_chat_keys on the chat server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 364,
+  "key": "export_enterprise_chat_report",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_enterprise_chat_report on the chat server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 365,
+  "key": "receipt_template_enterprise_chat",
+  "server": "chat",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_enterprise_chat on the chat server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 366,
+  "key": "charge_report_retail_chat",
+  "server": "chat",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_retail_chat on the chat server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 367,
+  "key": "backup_retail_chat_data",
+  "server": "chat",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "chat:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_retail_chat_data on the chat server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 368,
+  "key": "receipt_template_billing_support",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_billing_support on the support server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 369,
+  "key": "rotate_billing_support_keys",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_billing_support_keys on the support server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 370,
+  "key": "contact_export_sales_support",
+  "server": "support",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_sales_support on the support server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 371,
+  "key": "archive_sales_support_items",
+  "server": "support",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_sales_support_items on the support server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 372,
+  "key": "contact_export_vendor_support",
+  "server": "support",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_vendor_support on the support server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 373,
+  "key": "refund_status_vendor_support",
+  "server": "support",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_vendor_support on the support server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 374,
+  "key": "check_partner_support_status",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_partner_support_status on the support server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 375,
+  "key": "backup_partner_support_data",
+  "server": "support",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_partner_support_data on the support server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 376,
+  "key": "generate_legacy_support_summary",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool generate_legacy_support_summary on the support server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 377,
+  "key": "clean_legacy_support_duplicates",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_legacy_support_duplicates on the support server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 378,
+  "key": "validate_mobile_support_entry",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_mobile_support_entry on the support server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 379,
+  "key": "import_mobile_support_file",
+  "server": "support",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_mobile_support_file on the support server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 380,
+  "key": "export_web_support_report",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_web_support_report on the support server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 381,
+  "key": "charge_report_web_support",
+  "server": "support",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_web_support on the support server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 382,
+  "key": "charge_report_internal_support",
+  "server": "support",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_internal_support on the support server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 383,
+  "key": "archive_internal_support_items",
+  "server": "support",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_internal_support_items on the support server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 384,
+  "key": "search_regional_support_archive",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_regional_support_archive on the support server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 385,
+  "key": "contact_export_regional_support",
+  "server": "support",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_regional_support on the support server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 386,
+  "key": "validate_trial_support_entry",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_trial_support_entry on the support server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 387,
+  "key": "search_trial_support_archive",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_trial_support_archive on the support server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 388,
+  "key": "backup_enterprise_support_data",
+  "server": "support",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_enterprise_support_data on the support server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 389,
+  "key": "refund_status_enterprise_support",
+  "server": "support",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_enterprise_support on the support server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 390,
+  "key": "generate_retail_support_summary",
+  "server": "support",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool generate_retail_support_summary on the support server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 391,
+  "key": "refund_status_retail_support",
+  "server": "support",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "support:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_retail_support on the support server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 392,
+  "key": "search_billing_hr_archive",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_billing_hr_archive on the hr server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 393,
+  "key": "purge_billing_hr_cache",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_billing_hr_cache on the hr server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 394,
+  "key": "convert_sales_hr_format",
+  "server": "hr",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_sales_hr_format on the hr server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 395,
+  "key": "schedule_sales_hr_job",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_sales_hr_job on the hr server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 396,
+  "key": "update_vendor_hr_settings",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_vendor_hr_settings on the hr server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 397,
+  "key": "contact_export_vendor_hr",
+  "server": "hr",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_vendor_hr on the hr server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 398,
+  "key": "validate_partner_hr_entry",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_partner_hr_entry on the hr server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 399,
+  "key": "rotate_partner_hr_keys",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_partner_hr_keys on the hr server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 400,
+  "key": "contact_export_legacy_hr",
+  "server": "hr",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_legacy_hr on the hr server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 401,
+  "key": "search_legacy_hr_archive",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_legacy_hr_archive on the hr server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 402,
+  "key": "export_mobile_hr_report",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_mobile_hr_report on the hr server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 403,
+  "key": "purge_mobile_hr_cache",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_mobile_hr_cache on the hr server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 404,
+  "key": "check_web_hr_status",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_web_hr_status on the hr server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 405,
+  "key": "tag_web_hr_record",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_web_hr_record on the hr server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 406,
+  "key": "export_internal_hr_report",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_internal_hr_report on the hr server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 407,
+  "key": "backup_internal_hr_data",
+  "server": "hr",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_internal_hr_data on the hr server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 408,
+  "key": "update_regional_hr_settings",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_regional_hr_settings on the hr server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 409,
+  "key": "email_campaign_regional_hr",
+  "server": "hr",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_regional_hr on the hr server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 410,
+  "key": "generate_trial_hr_summary",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool generate_trial_hr_summary on the hr server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 411,
+  "key": "notify_trial_hr_team",
+  "server": "hr",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_trial_hr_team on the hr server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 412,
+  "key": "sync_enterprise_hr_records",
+  "server": "hr",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_enterprise_hr_records on the hr server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 413,
+  "key": "notify_enterprise_hr_team",
+  "server": "hr",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_enterprise_hr_team on the hr server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 414,
+  "key": "monitor_retail_hr_queue",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_retail_hr_queue on the hr server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 415,
+  "key": "audit_retail_hr_log",
+  "server": "hr",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "hr:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_retail_hr_log on the hr server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 416,
+  "key": "audit_billing_misc_log",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_billing_misc_log on the misc server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 417,
+  "key": "charge_report_billing_misc",
+  "server": "misc",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_billing_misc on the misc server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 418,
+  "key": "tag_sales_misc_record",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_sales_misc_record on the misc server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 419,
+  "key": "audit_sales_misc_log",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_sales_misc_log on the misc server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 420,
+  "key": "contact_export_vendor_misc",
+  "server": "misc",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_vendor_misc on the misc server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 421,
+  "key": "rotate_vendor_misc_keys",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_vendor_misc_keys on the misc server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 422,
+  "key": "contact_export_partner_misc",
+  "server": "misc",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_partner_misc on the misc server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 423,
+  "key": "schedule_partner_misc_job",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_partner_misc_job on the misc server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 424,
+  "key": "schedule_legacy_misc_job",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_legacy_misc_job on the misc server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 425,
+  "key": "receipt_template_legacy_misc",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_legacy_misc on the misc server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 426,
+  "key": "tag_mobile_misc_record",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_mobile_misc_record on the misc server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 427,
+  "key": "rotate_mobile_misc_keys",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_mobile_misc_keys on the misc server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 428,
+  "key": "validate_web_misc_entry",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Validated"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool validate_web_misc_entry on the misc server. Consumes DocText and produces Validated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 429,
+  "key": "archive_web_misc_items",
+  "server": "misc",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_web_misc_items on the misc server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 430,
+  "key": "search_internal_misc_archive",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_internal_misc_archive on the misc server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 431,
+  "key": "purge_internal_misc_cache",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Purged"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool purge_internal_misc_cache on the misc server. Consumes DocText and produces Purged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 432,
+  "key": "clean_regional_misc_duplicates",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_regional_misc_duplicates on the misc server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 433,
+  "key": "convert_regional_misc_format",
+  "server": "misc",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_regional_misc_format on the misc server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 434,
+  "key": "rotate_trial_misc_keys",
+  "server": "misc",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_trial_misc_keys on the misc server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 435,
+  "key": "contact_export_trial_misc",
+  "server": "misc",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool contact_export_trial_misc on the misc server. Consumes CustomerRef and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 436,
+  "key": "charge_report_enterprise_misc",
+  "server": "misc",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_enterprise_misc on the misc server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 437,
+  "key": "invoice_reminder_enterprise_misc",
+  "server": "misc",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_enterprise_misc on the misc server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 438,
+  "key": "convert_retail_misc_format",
+  "server": "misc",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_retail_misc_format on the misc server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 439,
+  "key": "invoice_reminder_retail_misc",
+  "server": "misc",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "misc:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_retail_misc on the misc server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 440,
+  "key": "generate_billing_analytics_summary",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool generate_billing_analytics_summary on the analytics server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 441,
+  "key": "fetch_billing_analytics_metrics",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool fetch_billing_analytics_metrics on the analytics server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 442,
+  "key": "receipt_template_sales_analytics",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_sales_analytics on the analytics server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 443,
+  "key": "refund_status_sales_analytics",
+  "server": "analytics",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_sales_analytics on the analytics server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 444,
+  "key": "update_vendor_analytics_settings",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Updated"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool update_vendor_analytics_settings on the analytics server. Consumes DocText and produces Updated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 445,
+  "key": "import_vendor_analytics_file",
+  "server": "analytics",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_vendor_analytics_file on the analytics server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 446,
+  "key": "search_partner_analytics_archive",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_partner_analytics_archive on the analytics server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 447,
+  "key": "import_partner_analytics_file",
+  "server": "analytics",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Imported"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool import_partner_analytics_file on the analytics server. Consumes FileRef and produces Imported.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 448,
+  "key": "backup_legacy_analytics_data",
+  "server": "analytics",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_legacy_analytics_data on the analytics server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 449,
+  "key": "notify_legacy_analytics_team",
+  "server": "analytics",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_legacy_analytics_team on the analytics server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 450,
+  "key": "notify_mobile_analytics_team",
+  "server": "analytics",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_mobile_analytics_team on the analytics server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 451,
+  "key": "audit_mobile_analytics_log",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_mobile_analytics_log on the analytics server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 452,
+  "key": "check_web_analytics_status",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_web_analytics_status on the analytics server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 453,
+  "key": "export_web_analytics_report",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_web_analytics_report on the analytics server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 454,
+  "key": "monitor_internal_analytics_queue",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_internal_analytics_queue on the analytics server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 455,
+  "key": "rotate_internal_analytics_keys",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_internal_analytics_keys on the analytics server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 456,
+  "key": "notify_regional_analytics_team",
+  "server": "analytics",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_regional_analytics_team on the analytics server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 457,
+  "key": "monitor_regional_analytics_queue",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_regional_analytics_queue on the analytics server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 458,
+  "key": "notify_trial_analytics_team",
+  "server": "analytics",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_trial_analytics_team on the analytics server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 459,
+  "key": "export_trial_analytics_report",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool export_trial_analytics_report on the analytics server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 460,
+  "key": "audit_enterprise_analytics_log",
+  "server": "analytics",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_enterprise_analytics_log on the analytics server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 461,
+  "key": "invoice_reminder_enterprise_analytics",
+  "server": "analytics",
+  "consumes": [
+   "Invoice"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool invoice_reminder_enterprise_analytics on the analytics server. Consumes Invoice and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 462,
+  "key": "refund_status_retail_analytics",
+  "server": "analytics",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool refund_status_retail_analytics on the analytics server. Consumes Charge and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 463,
+  "key": "sync_retail_analytics_records",
+  "server": "analytics",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "analytics:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_retail_analytics_records on the analytics server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 464,
+  "key": "notify_billing_ops_team",
+  "server": "ops",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_billing_ops_team on the ops server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 465,
+  "key": "audit_billing_ops_log",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_billing_ops_log on the ops server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 466,
+  "key": "sync_sales_ops_records",
+  "server": "ops",
+  "consumes": [
+   "CustomerRef"
+  ],
+  "produces": [
+   "Synced"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool sync_sales_ops_records on the ops server. Consumes CustomerRef and produces Synced.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 467,
+  "key": "check_sales_ops_status",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Status"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool check_sales_ops_status on the ops server. Consumes DocText and produces Status.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 468,
+  "key": "audit_vendor_ops_log",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool audit_vendor_ops_log on the ops server. Consumes DocText and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 469,
+  "key": "search_vendor_ops_archive",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool search_vendor_ops_archive on the ops server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 470,
+  "key": "notify_partner_ops_team",
+  "server": "ops",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_partner_ops_team on the ops server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 471,
+  "key": "archive_partner_ops_items",
+  "server": "ops",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Archived"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool archive_partner_ops_items on the ops server. Consumes FileRef and produces Archived.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 472,
+  "key": "receipt_template_legacy_ops",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_legacy_ops on the ops server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 473,
+  "key": "tag_legacy_ops_record",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_legacy_ops_record on the ops server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 474,
+  "key": "convert_mobile_ops_format",
+  "server": "ops",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_mobile_ops_format on the ops server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 475,
+  "key": "rotate_mobile_ops_keys",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Rotated"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool rotate_mobile_ops_keys on the ops server. Consumes DocText and produces Rotated.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 476,
+  "key": "schedule_web_ops_job",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Scheduled"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool schedule_web_ops_job on the ops server. Consumes DocText and produces Scheduled.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 477,
+  "key": "charge_report_web_ops",
+  "server": "ops",
+  "consumes": [
+   "Charge"
+  ],
+  "produces": [
+   "Summary"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool charge_report_web_ops on the ops server. Consumes Charge and produces Summary.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 478,
+  "key": "monitor_internal_ops_queue",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Metrics"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool monitor_internal_ops_queue on the ops server. Consumes DocText and produces Metrics.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 479,
+  "key": "tag_internal_ops_record",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_internal_ops_record on the ops server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 480,
+  "key": "notify_regional_ops_team",
+  "server": "ops",
+  "consumes": [
+   "TeamRef"
+  ],
+  "produces": [
+   "Message"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool notify_regional_ops_team on the ops server. Consumes TeamRef and produces Message.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 481,
+  "key": "email_campaign_regional_ops",
+  "server": "ops",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_regional_ops on the ops server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 482,
+  "key": "tag_trial_ops_record",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Tagged"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool tag_trial_ops_record on the ops server. Consumes DocText and produces Tagged.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 483,
+  "key": "email_campaign_trial_ops",
+  "server": "ops",
+  "consumes": [
+   "EmailAddr"
+  ],
+  "produces": [
+   "SentMail"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool email_campaign_trial_ops on the ops server. Consumes EmailAddr and produces SentMail.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 484,
+  "key": "clean_enterprise_ops_duplicates",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "Cleaned"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool clean_enterprise_ops_duplicates on the ops server. Consumes DocText and produces Cleaned.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 485,
+  "key": "convert_enterprise_ops_format",
+  "server": "ops",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Converted"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool convert_enterprise_ops_format on the ops server. Consumes FileRef and produces Converted.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 486,
+  "key": "backup_retail_ops_data",
+  "server": "ops",
+  "consumes": [
+   "FileRef"
+  ],
+  "produces": [
+   "Backup"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool backup_retail_ops_data on the ops server. Consumes FileRef and produces Backup.",
+  "tokens": 82,
+  "core": false
+ },
+ {
+  "id": 487,
+  "key": "receipt_template_retail_ops",
+  "server": "ops",
+  "consumes": [
+   "DocText"
+  ],
+  "produces": [
+   "FileRef"
+  ],
+  "scopes": [
+   "ops:read"
+  ],
+  "requires": [],
+  "desc": "Tool receipt_template_retail_ops on the ops server. Consumes DocText and produces FileRef.",
+  "tokens": 82,
+  "core": false
+ }
+]
